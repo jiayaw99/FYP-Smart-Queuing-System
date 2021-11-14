@@ -18,7 +18,7 @@ class Form1(Form1Template):
       record = anvil.server.call('simulation',count)
       row = DataRowPanel(item={'column_1':record[0],'column_2':record[1],
                                      'column_3':record[2],'column_4':record[3],
-                                     'column_5':record[4],'column_5':record[5],
+                                     'column_5':record[4],'column_6':round(record[5],2),
                                      'column_7':record[6]})
       self.data_grid_1.add_component(row)
       count+=1

@@ -11,15 +11,16 @@ components:
   properties:
     role: null
     columns:
-    - {id: CONSOO, title: Doctor number, data_key: column_1, width: 79, expand: false}
-    - {id: DEBGMO, title: Patient, data_key: column_2, width: 69, expand: false}
-    - {id: HUDJUF, title: Arrival time, data_key: column_3, width: 66, expand: false}
-    - {id: QNMJPK, title: Queue size when arrived, data_key: column_4, width: 113,
+    - {id: CONSOO, title: Doctor number, data_key: column_1, width: 129, expand: false}
+    - {id: DEBGMO, title: Patient, data_key: column_2, width: 78, expand: false}
+    - {id: HUDJUF, title: Arrival time, data_key: column_3, width: 107, expand: false}
+    - {id: QNMJPK, title: Queue size when arrived, data_key: column_4, width: 184,
       expand: false}
-    - {id: MVCCUU, title: Priority Index, data_key: column_5, width: 76, expand: false}
-    - {id: XVDUNO, title: Predicted Waiting time, data_key: column_6, width: 134,
+    - {id: MVCCUU, title: Priority Index, data_key: column_5, width: 117, expand: false}
+    - {id: XVDUNO, title: Predicted Waiting time, data_key: column_6, width: 193,
       expand: false}
-    - {id: ODVIJY, title: Actual waiting time, data_key: column_7}
+    - {id: ODVIJY, title: Actual waiting time, data_key: column_7, expand: false,
+      width: 292}
     auto_header: true
     tooltip: ''
     border: ''
