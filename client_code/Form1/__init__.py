@@ -1,6 +1,7 @@
 from ._anvil_designer import Form1Template
 from anvil import *
 import anvil.server
+import time 
 
 class Form1(Form1Template):
   def __init__(self, **properties):
@@ -12,8 +13,16 @@ class Form1(Form1Template):
 
   def data_grid_1_show(self, **event_args):
     """This method is called when the data grid is shown on the screen"""
-    iris_category = anvil.server.call('simulation')
+    count=0
+    while(True):
+      record = anvil.server.call('simulation',count)
+      row = DataRowPanel(item={'column_1':record[0],'column_2':record[1],
+                                     'column_3':record[2],'column_4':record[3],
+                                     'column_5':record[4],'column_5':record[5],
+                                     'column_7':record[6]})
+      self.data_grid_1.add_component(row)
+      count+=1
+      time.sleep(1)
 
-    pass
 
 
