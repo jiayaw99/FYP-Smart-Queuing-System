@@ -1,8 +1,9 @@
-allow_embedding: false
-package_name: Main_page
-db_schema: {}
-name: Main page
-startup_form: Form1
-renamed: true
-runtime_options: {version: 2, client_version: '3', server_version: python3-sandbox}
 services: []
+package_name: Main_page
+allow_embedding: false
+name: Main page
+runtime_options: {version: 2, client_version: '3', server_version: python3-sandbox}
+metadata: {}
+startup_form: Form1
+db_schema: {}
+renamed: true
