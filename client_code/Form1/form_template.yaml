@@ -1,0 +1,36 @@
+is_package: true
+container:
+  type: HtmlTemplate
+  properties: {html: '@theme:standard-page.html'}
+components:
+- type: ColumnPanel
+  properties: {}
+  name: content_panel
+  layout_properties: {slot: default}
+- type: DataGrid
+  properties:
+    role: null
+    columns:
+    - {id: CONSOO, title: Column 1, data_key: column_1}
+    - {id: DEBGMO, title: Column 2, data_key: column_2}
+    - {id: HUDJUF, title: Column 3, data_key: column_3}
+    - {id: QNMJPK, title: Column 4, data_key: column_4}
+    - {id: MVCCUU, title: Column 5, data_key: column_5}
+    auto_header: true
+    tooltip: ''
+    border: ''
+    foreground: ''
+    rows_per_page: 20
+    visible: true
+    wrap_on: never
+    show_page_controls: true
+    spacing_above: small
+    spacing_below: small
+    background: ''
+  name: data_grid_1
+  layout_properties: {slot: default}
+  components:
+  - type: RepeatingPanel
+    properties: {spacing_above: none, spacing_below: none, item_template: Form1.RowTemplate1}
+    name: repeating_panel_1
+    layout_properties: {}
