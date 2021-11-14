@@ -11,11 +11,15 @@ components:
   properties:
     role: null
     columns:
-    - {id: CONSOO, title: Column 1, data_key: column_1}
-    - {id: DEBGMO, title: Column 2, data_key: column_2}
-    - {id: HUDJUF, title: Column 3, data_key: column_3}
-    - {id: QNMJPK, title: Column 4, data_key: column_4}
-    - {id: MVCCUU, title: Column 5, data_key: column_5}
+    - {id: CONSOO, title: Doctor number, data_key: column_1, width: 79, expand: false}
+    - {id: DEBGMO, title: Patient, data_key: column_2, width: 69, expand: false}
+    - {id: HUDJUF, title: Arrival time, data_key: column_3, width: 66, expand: false}
+    - {id: QNMJPK, title: Queue size when arrived, data_key: column_4, width: 113,
+      expand: false}
+    - {id: MVCCUU, title: Priority Index, data_key: column_5, width: 76, expand: false}
+    - {id: XVDUNO, title: Predicted Waiting time, data_key: column_6, width: 134,
+      expand: false}
+    - {id: ODVIJY, title: Actual waiting time, data_key: column_7}
     auto_header: true
     tooltip: ''
     border: ''
@@ -34,3 +38,5 @@ components:
     properties: {spacing_above: none, spacing_below: none, item_template: Form1.RowTemplate1}
     name: repeating_panel_1
     layout_properties: {}
+    event_bindings: {show: repeating_panel_1_show}
+  event_bindings: {show: data_grid_1_show}
