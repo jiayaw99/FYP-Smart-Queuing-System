@@ -199,11 +199,15 @@ class Form1(Form1Template):
                 Notification("Patient " + str(index_noshow[i]) + " no show ",
                 title="Patient No-show",
                 style="warning").show()  
-
+        
+        hour=int(current_clock/60)
+        minute=current_clock%60
+        self.clock.text=str(8+hour)+"."+str(minute)+(" am" if hour>4 else " pm")
         current_clock += 1
 
         if len(current_waiting_patient) > 10 and current_clock > 360:  # do not accept patient anymore if too much queue near the closing hour
             clocksize = 360
+        time.sleep(0.5)
 
 
     #while(True):
