@@ -67,6 +67,7 @@ class Form1(Form1Template):
       Doctor_Status = [0]*doctor_number
       index = [0]*doctor_number
 
+      self.doctor_number.text=str(doctor_number) + " doctors on call today"
       start_queue = int(doctor_number * (rand.randrange(20) + 30)/5)
       for i in range(start_queue):
         new_patient = [len(all_patient) + 1, rand.randrange(2), rand.randrange(10, 60),
@@ -84,6 +85,13 @@ class Form1(Form1Template):
     #print('Clock size    Queue Size          Doctor 1 Status                      Doctor 2 Status                        Event')
       while current_clock < clocksize or any(v != 0 for v in current_patient_with_doctor) == True \
             or len(current_waiting_patient) != 0 or any(v != 0 for v in calling_patient) == True:
+        hour=int(current_clock/60)
+        minute=current_clock%60
+        if (hour>12):
+          hour-=12 
+        self.clock.text=str(8+hour)+"."+ ("0" + str(minute) if minute<10 else str(minute))+(" pm" if hour>4 else " am")                            
+        current_clock += 1
+        
         arrival = False
         arrival_index = 0
         left = [False]*doctor_number
@@ -199,15 +207,10 @@ class Form1(Form1Template):
                 Notification("Patient " + str(index_noshow[i]) + " no show ",
                 title="Patient No-show",
                 style="warning").show()  
-        
-        hour=int(current_clock/60)
-        minute=current_clock%60
-        self.clock.text=str(8+hour)+"."+str(minute)+(" am" if hour>4 else " pm")
-        current_clock += 1
 
         if len(current_waiting_patient) > 10 and current_clock > 360:  # do not accept patient anymore if too much queue near the closing hour
             clocksize = 360
-        time.sleep(0.5)
+        time.sleep(1)
 
 
     #while(True):
