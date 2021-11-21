@@ -4,23 +4,32 @@ container:
   properties: {html: '@theme:standard-page.html'}
 components:
 - type: ColumnPanel
-  properties: {}
+  properties: {col_widths: '{}'}
   name: content_panel
   layout_properties: {slot: default}
+  components:
+  - type: Label
+    properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
+      visible: true, text: '', font_size: null, font: '', spacing_above: small, icon_align: left,
+      spacing_below: small, italic: false, background: '', bold: false, underline: false,
+      icon: ''}
+    name: doctor_number
+    layout_properties: {grid_position: 'GCZSMX,RNQZMF'}
+  - type: Label
+    properties: {}
+    name: clock
+    layout_properties: {grid_position: 'GCZSMX,PSJGZV'}
 - type: DataGrid
   properties:
     role: null
     columns:
-    - {id: CONSOO, title: Doctor number, data_key: column_1, width: 129, expand: false}
-    - {id: DEBGMO, title: Patient, data_key: column_2, width: 78, expand: false}
-    - {id: HUDJUF, title: Arrival time, data_key: column_3, width: 107, expand: false}
-    - {id: QNMJPK, title: Queue size when arrived, data_key: column_4, width: 184,
+    - {id: CONSOO, title: Patient, data_key: column_1, width: '70', expand: false}
+    - {id: HUDJUF, title: Arrival time, data_key: column_2, width: 107, expand: false}
+    - {id: QNMJPK, title: Queue size when arrived, data_key: column_3, width: 184,
       expand: false}
-    - {id: MVCCUU, title: Priority Index, data_key: column_5, width: 117, expand: false}
-    - {id: XVDUNO, title: Predicted Waiting time, data_key: column_6, width: 193,
+    - {id: MVCCUU, title: Priority index, data_key: column_4, width: 117, expand: false}
+    - {id: XVDUNO, title: Predicted waiting time, data_key: column_5, width: 188,
       expand: false}
-    - {id: ODVIJY, title: Actual waiting time, data_key: column_7, expand: false,
-      width: 292}
     auto_header: true
     tooltip: ''
     border: ''
@@ -37,7 +46,33 @@ components:
   components:
   - type: RepeatingPanel
     properties: {spacing_above: none, spacing_below: none, item_template: Form1.RowTemplate1}
-    name: repeating_panel_1
+    name: current_queue
     layout_properties: {}
     event_bindings: {show: repeating_panel_1_show}
   event_bindings: {show: data_grid_1_show}
+- type: DataGrid
+  properties:
+    role: null
+    columns:
+    - {id: FVFVNX, title: Patient with doctor, data_key: column_1, width: 160, expand: false}
+    - {id: IIFQBJ, title: Time of being served, data_key: column_2, width: 158, expand: false}
+    - {id: KIQAGZ, title: Actual waiting time, data_key: column_3}
+    - {id: HVDREL, title: Predicted waiting time, data_key: column_4}
+    auto_header: true
+    tooltip: ''
+    border: ''
+    foreground: ''
+    rows_per_page: 20
+    visible: true
+    wrap_on: never
+    show_page_controls: true
+    spacing_above: small
+    spacing_below: small
+    background: ''
+  name: data_grid_2
+  layout_properties: {slot: default}
+  components:
+  - type: RepeatingPanel
+    properties: {spacing_above: none, spacing_below: none, item_template: Form1.RowTemplate2}
+    name: patient_with_doctor
+    layout_properties: {}
