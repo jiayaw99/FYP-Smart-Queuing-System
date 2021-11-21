@@ -81,6 +81,22 @@ class Form1(Form1Template):
         arrival_index = new_patient[0]
         current_waiting_patient.append(new_patient)
         current_waiting_patient.sort(key=lambda x: x[9],reverse=True)
+      
+      if current_clock ==0:
+        for i in range(len(current_waiting_patient)):
+          #self.current_queue.items=
+           result = anvil.server.call('predict',[[doctor_number,current_waiting_patient[i][0],
+                                                 (-1 if current_waiting_patient[i][5]==-1 else 1),
+                                                 current_waiting_patient[i][6],
+                                                 current_waiting_patient[i][9]]])
+           row = DataRowPanel(item={'column_1':current_waiting_patient[i][0],
+                                    'column_2':"before 8.00 am",
+                                    'column_3':current_waiting_patient[i][6],
+                                    'column_4':current_waiting_patient[i][9],
+                                    'column_5':result})
+      #self.data_grid_1.add_component(row)
+                                   
+           self.data_grid_1.add_component(row)
 
     #print('Clock size    Queue Size          Doctor 1 Status                      Doctor 2 Status                        Event')
       while current_clock < clocksize or any(v != 0 for v in current_patient_with_doctor) == True \

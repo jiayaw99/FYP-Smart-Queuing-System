@@ -60,7 +60,7 @@ components:
     columns:
     - {id: FVFVNX, title: Patient with doctor, data_key: column_1, width: 160, expand: false}
     - {id: IIFQBJ, title: Time of being served, data_key: column_2, width: 158, expand: false}
-    - {id: KIQAGZ, title: Actual waiting time, data_key: column_3}
+    - {id: KIQAGZ, title: Actual waiting time, data_key: column_3, width: 162, expand: false}
     - {id: HVDREL, title: Predicted waiting time, data_key: column_4}
     auto_header: true
     tooltip: ''
