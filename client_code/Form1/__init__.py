@@ -240,7 +240,7 @@ class Form1(Form1Template):
                 title="Patient No-show",
                 style="warning").show(1)  
 
-        if len(current_waiting_patient) > 10 and current_clock > 360:  # do not accept patient anymore if too much queue near the closing hour
+        if len(current_waiting_patient) > 10 and current_clock > 420:  # do not accept patient anymore if too much queue near the closing hour
             clocksize = 360
         time.sleep(1)
 
