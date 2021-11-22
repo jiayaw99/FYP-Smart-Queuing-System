@@ -121,7 +121,7 @@ class Form1(Form1Template):
         current_waiting_patient.append(new_patient)
         current_waiting_patient.sort(key=lambda x: x[9],reverse=True)
 
-      if current_clock ==0:
+      if current_clock == 0:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
         for i in range(len(current_waiting_patient)):
           result[i][0] -= 10
@@ -144,6 +144,7 @@ class Form1(Form1Template):
 
         self.clock.text=getTime(current_clock)                            
         
+        skip_arrival=False
         arrival = False
         arrival_index = 0
         left = [False]*doctor_number
@@ -164,7 +165,7 @@ class Form1(Form1Template):
             arrival_index = new_patient[0]
             current_waiting_patient.append(new_patient)
             current_waiting_patient.sort(key=lambda x: x[9], reverse=True)
-
+            
 
         if rand.random() < 0.002:  # emergency case
             new_patient = [len(all_patient) + 1, rand.randrange(2), rand.randrange(10, 60),
@@ -226,6 +227,16 @@ class Form1(Form1Template):
                         calling_patient[i]=current_waiting_patient.pop(0)
                         
                     else:
+                        if arrival and len(current_waiting_patient)==1:
+                          all_patient[arrival_index-1][6]=len(current_waiting_patient)
+                          Notification("New patient " + str(arrival_index) + " arrived  ",
+                          title="New Arrival",
+                          style="success").show(1)
+            
+                          assignNewPatientToQueue(doctor_number,all_patient[arrival_index-1],current_clock)
+                          self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
+                          skip_arrival=True
+
                         servePatient(current_waiting_patient[0],self.queue_panel,self.patient_with_doctor,current_clock)
 
                         current_patient_with_doctor[i] = current_waiting_patient.pop(0)
@@ -249,11 +260,11 @@ class Form1(Form1Template):
             if (Doctor_Status[i] == "Idle"):
                 doctor_idle_count[i] += 1
 
-        if arrival:
+        if arrival and not skip_arrival:
             all_patient[arrival_index-1][6]=len(current_waiting_patient)
             Notification("New patient " + str(arrival_index) + " arrived  ",
-             title="New Arrival",
-             style="success").show(1)
+            title="New Arrival",
+            style="success").show(1)
             
             assignNewPatientToQueue(doctor_number,all_patient[arrival_index-1],current_clock)
 
