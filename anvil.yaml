@@ -10,13 +10,10 @@ metadata: {}
 startup_form: Form1
 db_schema:
   table1:
-    title: Table 1
+    title: Queue Table
     client: full
     server: full
     columns:
-    - name: Patient
-      admin_ui: {width: 200}
-      type: number
     - name: Arrival time
       admin_ui: {width: 200}
       type: string
@@ -24,6 +21,26 @@ db_schema:
       admin_ui: {width: 200}
       type: string
     - name: Priority index
+      admin_ui: {width: 200}
+      type: string
+    - name: Predicted waiting time
+      admin_ui: {width: 200}
+      type: string
+    - name: Patient
+      admin_ui: {width: 200}
+      type: string
+  doctor_table:
+    title: Doctor Table
+    client: full
+    server: full
+    columns:
+    - name: Patient
+      admin_ui: {width: 200}
+      type: string
+    - name: Time of being served
+      admin_ui: {width: 200}
+      type: string
+    - name: Actual waiting time
       admin_ui: {width: 200}
       type: string
     - name: Predicted waiting time
