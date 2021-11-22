@@ -1,8 +1,14 @@
 from ._anvil_designer import Form1Template
 from anvil import *
+import anvil.tables as tables
+import anvil.tables.query as q
+from anvil.tables import app_tables
+import anvil.tables as tables
+from anvil.tables import app_tables
 import anvil.server
 import time 
 import random as rand
+
 disease =  {1: "A",2: "B",3: "C",4: "D",5: "E",6:"F"}
 
 def RemovePatientWithDoctor(current_patient_with_doctor):
@@ -122,6 +128,8 @@ class Form1(Form1Template):
             arrival_index = new_patient[0]
             current_waiting_patient.append(new_patient)
             current_waiting_patient.sort(key=lambda x: x[9], reverse=True)
+            aa=DataRowPanel()
+            self.data_grid_1.g
 
         if rand.random() < 0.002:  # emergency case
             new_patient = [len(all_patient) + 1, rand.randrange(2), rand.randrange(10, 60),
@@ -195,11 +203,11 @@ class Form1(Form1Template):
             all_patient[arrival_index-1][6]=len(current_waiting_patient)
             Notification("New patient " + str(arrival_index) + " arrived  ",
              title="New Arrival",
-             style="success").show()
+             style="success").show(1)
         if emergency:
             Notification( "New emergency patient " + str(emergency_index) + " arrived  ",
              title="Emergency Arrival",
-             style="danger").show()
+             style="danger").show(1)
         for i in range(doctor_number):
             if left[i]:
               Notification("Patient " + str(index[i]) + " left  ",
@@ -209,14 +217,14 @@ class Form1(Form1Template):
               noshow_trial[i] += 1
               Notification("Calling for Patient " + str(index_noshow[i]) + " " + str(noshow_trial[i]) + " time(s) ",
               title="Calling for Patient",
-              style="warning").show()
+              style="warning").show(1)
             elif noshow_trial[i] == 5 and index_noshow[i] != 0 and calling[i]:
                 noshow_trial[i] = 0
                 calling[i] = False
                 calling_patient[i]=0
                 Notification("Patient " + str(index_noshow[i]) + " no show ",
                 title="Patient No-show",
-                style="warning").show()  
+                style="warning").show(1)  
 
         if len(current_waiting_patient) > 10 and current_clock > 360:  # do not accept patient anymore if too much queue near the closing hour
             clocksize = 360

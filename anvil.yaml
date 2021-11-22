@@ -1,9 +1,46 @@
-services: []
+services:
+- source: /runtime/services/tables.yml
+  client_config: {}
+  server_config: {auto_create_missing_columns: false}
 package_name: Main_page
 allow_embedding: false
 name: Main page
 runtime_options: {version: 2, client_version: '3', server_version: python3-sandbox}
 metadata: {}
 startup_form: Form1
-db_schema: {}
+db_schema:
+  table1:
+    title: Table 1
+    client: full
+    server: full
+    columns:
+    - name: Patient
+      admin_ui: {width: 200}
+      type: string
+    - name: Arrival time
+      admin_ui: {width: 200}
+      type: string
+    - name: Queue size when arrived
+      admin_ui: {width: 200}
+      type: string
+    - name: Priority index
+      admin_ui: {width: 200}
+      type: string
+    - name: Predicted waiting time
+      admin_ui: {width: 200}
+      type: string
+  table_1:
+    title: Table 1
+    client: none
+    server: full
+    columns:
+    - name: Column0
+      admin_ui: {width: 200}
+      type: string
+    - name: Column1
+      admin_ui: {width: 200}
+      type: string
+    - name: Column2
+      admin_ui: {width: 200}
+      type: string
 renamed: true
