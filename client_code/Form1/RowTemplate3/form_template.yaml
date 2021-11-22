@@ -1,0 +1,34 @@
+container: {type: DataRowPanel}
+components:
+- type: Label
+  properties: {}
+  name: Patient
+  layout_properties: {column: IRGQVG}
+  data_bindings:
+  - {property: text, code: 'self.item[''Patient'']'}
+- type: Label
+  properties: {}
+  name: label_1
+  layout_properties: {column: ANQVDY}
+  data_bindings:
+  - {property: text, code: 'self.item[''Arrival time'']'}
+- type: Label
+  properties: {}
+  name: label_2
+  layout_properties: {column: VNYGYQ}
+  data_bindings:
+  - {property: text, code: 'self.item[''Queue size when arrived'']'}
+- type: Label
+  properties: {}
+  name: label_3
+  layout_properties: {column: ZVIQCQ}
+  data_bindings:
+  - {property: text, code: 'self.item[''Priority index'']'}
+- type: Label
+  properties: {}
+  name: label_4
+  layout_properties: {column: LNKPKF}
+  data_bindings:
+  - {property: text, code: 'self.item[''Predicted waiting time'']'}
+is_package: true
+item_type: {table_id: 178877}

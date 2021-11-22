@@ -27,13 +27,12 @@ components:
   properties:
     role: null
     columns:
-    - {id: CONSOO, title: Patient, data_key: column_1, width: '70', expand: false}
-    - {id: HUDJUF, title: Arrival time, data_key: column_2, width: 107, expand: false}
-    - {id: QNMJPK, title: Queue size when arrived, data_key: column_3, width: 184,
-      expand: false}
-    - {id: MVCCUU, title: Priority index, data_key: column_4, width: 117, expand: false}
-    - {id: XVDUNO, title: Predicted waiting time, data_key: column_5, width: 188,
-      expand: false}
+    - {id: IRGQVG, title: Patient, data_key: Patient, width: 76, expand: false}
+    - {id: ANQVDY, title: Arrival Time, data_key: Arrival time, width: 128, expand: false}
+    - {id: VNYGYQ, title: Queue Size When Arrived, data_key: Queue size when arrived,
+      width: 189, expand: false}
+    - {id: ZVIQCQ, title: Priority Index, data_key: Priority index, width: 127, expand: false}
+    - {id: LNKPKF, title: Predicted Waiting Time, data_key: Predicted waiting time}
     auto_header: true
     tooltip: ''
     border: ''
@@ -49,10 +48,9 @@ components:
   layout_properties: {slot: default}
   components:
   - type: RepeatingPanel
-    properties: {spacing_above: none, spacing_below: none, item_template: Form1.RowTemplate1}
-    name: current_queue
+    properties: {spacing_above: none, spacing_below: none, item_template: Form1.RowTemplate3}
+    name: repeating_panel_1
     layout_properties: {}
-    event_bindings: {show: repeating_panel_1_show}
   event_bindings: {show: data_grid_1_show}
   data_bindings: []
 - type: DataGrid

@@ -3,13 +3,12 @@ from anvil import *
 import anvil.tables as tables
 import anvil.tables.query as q
 from anvil.tables import app_tables
-import anvil.tables as tables
-from anvil.tables import app_tables
 import anvil.server
 import time 
 import random as rand
 
 disease =  {1: "A",2: "B",3: "C",4: "D",5: "E",6:"F"}
+
 
 def RemovePatientWithDoctor(current_patient_with_doctor):
     if current_patient_with_doctor !=0 and current_patient_with_doctor[3]==0:
@@ -33,6 +32,14 @@ def CallingForNoshow(noshow_trial):
     else:
         noshow_trial += 1
         return True  #not answering the call
+      
+def getTime(current_clock):
+  hour=int(current_clock/60)
+  minute=current_clock%60
+  if (hour>12):
+    hour-=12 
+  return(str(8+hour)+"."+ ("0" + str(minute) if minute<10 else str(minute))+(" pm" if hour>4 else " am"))                            
+        
 
 class Form1(Form1Template):
     
@@ -44,7 +51,6 @@ class Form1(Form1Template):
 
   def data_grid_1_show(self, **event_args):
     """This method is called when the data grid is shown on the screen"""
-
     #count=0
     doctors_number=[]
     for i in range(1): #doctor number in 30 days
@@ -91,21 +97,19 @@ class Form1(Form1Template):
       if current_clock ==0:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
         for i in range(len(current_waiting_patient)):
-           row = DataRowPanel(item={'column_1':current_waiting_patient[i][0],
-                                    'column_2':"before 8.00 am",
-                                    'column_3':current_waiting_patient[i][6],
-                                    'column_4':current_waiting_patient[i][9],
-                                    'column_5':result[i][0]})
-           self.data_grid_1.add_component(row)
+          new_row=app_tables.table1.add_row(Patient=current_waiting_patient[i][0])
+          new_row['Arrival time']= "before 8.00 am"
+          new_row['Queue size when arrived']=str(current_waiting_patient[i][6])
+          new_row['Priority index']=str(current_waiting_patient[i][9])
+          new_row['Predicted waiting time']=str(result[i][0])
+        
+        self.repeating_panel_1.items=app_tables.table1.search()
 
     #print('Clock size    Queue Size          Doctor 1 Status                      Doctor 2 Status                        Event')
       while current_clock < clocksize or any(v != 0 for v in current_patient_with_doctor) == True \
             or len(current_waiting_patient) != 0 or any(v != 0 for v in calling_patient) == True:
-        hour=int(current_clock/60)
-        minute=current_clock%60
-        if (hour>12):
-          hour-=12 
-        self.clock.text=str(8+hour)+"."+ ("0" + str(minute) if minute<10 else str(minute))+(" pm" if hour>4 else " am")                            
+
+        self.clock.text=getTime(current_clock)                            
         current_clock += 1
         
         arrival = False
@@ -128,8 +132,7 @@ class Form1(Form1Template):
             arrival_index = new_patient[0]
             current_waiting_patient.append(new_patient)
             current_waiting_patient.sort(key=lambda x: x[9], reverse=True)
-            aa=DataRowPanel()
-            self.data_grid_1.g
+
 
         if rand.random() < 0.002:  # emergency case
             new_patient = [len(all_patient) + 1, rand.randrange(2), rand.randrange(10, 60),
@@ -204,6 +207,17 @@ class Form1(Form1Template):
             Notification("New patient " + str(arrival_index) + " arrived  ",
              title="New Arrival",
              style="success").show(1)
+            result = anvil.server.call('predict',[doctor_number,all_patient[arrival_index-1][0],(-1 if all_patient[arrival_index-1][5]==-1 else 1),
+                   all_patient[arrival_index-1][6],all_patient[arrival_index-1][9]])
+            
+            new_row=app_tables.table1.add_row(Patient=all_patient[arrival_index-1][0])
+            new_row['Arrival time']= getTime(current_clock)   
+            new_row['Queue size when arrived']=str(all_patient[arrival_index-1][6])
+            new_row['Priority index']=str(all_patient[arrival_index-1][9])
+            new_row['Predicted waiting time']=str(result)
+            
+            self.repeating_panel_1.items=app_tables.table1.search(tables.order_by("Priority index",ascending=False))
+
         if emergency:
             Notification( "New emergency patient " + str(emergency_index) + " arrived  ",
              title="Emergency Arrival",
