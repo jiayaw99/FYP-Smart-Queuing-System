@@ -98,7 +98,7 @@ class Form1(Form1Template):
 
     for days in range(1): # 30 days
       doctor_number=doctors_number[days]
-      clocksize = 480  # 8 hours
+      clocksize = 600  # 10 hours (from 8 am to 6pm)
       current_clock = 0
       all_patient = []
       current_waiting_patient = []
@@ -311,7 +311,9 @@ class Form1(Form1Template):
                 #To be edit,change to red text and remain in list
                 
         current_clock += 1
-        if len(current_waiting_patient) > 10 and current_clock > 420:  # do not accept patient anymore if too much queue near the closing hour
-            clocksize = 420
+        if len(current_waiting_patient)/doctor_number >= 10 and current_clock<clocksize and current_clock > 450:  # do not accept patient anymore if too much queue near the closing hour
+            clocksize = 450
+        elif len(current_waiting_patient)/doctor_number >= 5 and current_clock<clocksize and current_clock > 550:  # do not accept patient anymore if too much queue near the closing hour
+            clocksize = 550
         time.sleep(0.5)
         
