@@ -18,7 +18,7 @@ def RemovePatientWithDoctor(current_patient_with_doctor):
         return 0,False
 
 def CheckNoShow(arrival_index, current_waiting_patient):
-    random_noshow_rate=rand.randrange(20)/100  #15
+    random_noshow_rate=rand.randrange(20)/100  
     index = current_waiting_patient[0][0]
     if rand.random() < random_noshow_rate and index!=arrival_index:
         return index
@@ -26,7 +26,7 @@ def CheckNoShow(arrival_index, current_waiting_patient):
         return 0
 
 def CallingForNoshow(noshow_trial):
-    call_success_rate=rand.randrange(30)/100   #30
+    call_success_rate=rand.randrange(30)/100   #30%
     if rand.random() < call_success_rate and noshow_trial!=0:
         return False
     else:
@@ -36,10 +36,9 @@ def CallingForNoshow(noshow_trial):
 def getTime(current_clock):
   hour=int(current_clock/60) + 8
   minute=current_clock%60
-  period=" am"
+  period=" am" if hour < 12 else " pm"
   if (hour>12):
     hour-=12
-    period=" pm"
   return(str(hour)+"."+ ("0" + str(minute) if minute<10 else str(minute))+period)                            
         
 def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
@@ -63,8 +62,17 @@ def servePatient(currentPatient,queue_panel,doctor_panel,current_clock):
   app_tables.doctor_table.add_row(**my_dict)
   
   pop_row.delete()
-  queue_panel.items=app_tables.queue_table.search()
+  queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
   doctor_panel.items=app_tables.doctor_table.search()
+  
+def getInstantServe(doctor_number,patient,current_clock,arrival_index,length):
+  patient[6]=length
+  Notification("New patient " + str(arrival_index) + " arrived  ",
+  title="New Arrival",
+  style="success").show(1)
+            
+  assignNewPatientToQueue(doctor_number,patient,current_clock)
+  return True
 
 class Form1(Form1Template):
     
@@ -136,7 +144,7 @@ class Form1(Form1Template):
           app_tables.queue_table.add_row(**my_dict)
           
 
-        self.queue_panel.items=app_tables.queue_table.search()
+        self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
 
     #print('Clock size    Queue Size          Doctor 1 Status                      Doctor 2 Status                        Event')
       while current_clock < clocksize or any(v != 0 for v in current_patient_with_doctor) == True \
@@ -206,6 +214,14 @@ class Form1(Form1Template):
                     calling_patient[i]=0
                     no_show_record.append(index_noshow[i])
                     if len(current_waiting_patient) > 0 and current_patient_with_doctor[i] == 0:
+                      if arrival and len(current_waiting_patient)==1:
+                          skip_arrival=getInstantServe(doctor_number,all_patient[arrival_index-1],current_clock,arrival_index,len(current_waiting_patient))
+                          self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
+
+                      elif arrival and current_waiting_patient[0][0] == arrival_index:
+                          skip_arrival=getInstantServe(doctor_number,all_patient[arrival_index-1],current_clock,arrival_index,len(current_waiting_patient))
+                          self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
+                      
                       servePatient(current_waiting_patient[0],self.queue_panel,self.patient_with_doctor,current_clock)
 
                       current_patient_with_doctor[i] = current_waiting_patient.pop(0)
@@ -228,15 +244,13 @@ class Form1(Form1Template):
                         
                     else:
                         if arrival and len(current_waiting_patient)==1:
-                          all_patient[arrival_index-1][6]=len(current_waiting_patient)
-                          Notification("New patient " + str(arrival_index) + " arrived  ",
-                          title="New Arrival",
-                          style="success").show(1)
-            
-                          assignNewPatientToQueue(doctor_number,all_patient[arrival_index-1],current_clock)
+                          skip_arrival=getInstantServe(doctor_number,all_patient[arrival_index-1],current_clock,arrival_index,len(current_waiting_patient))
                           self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
-                          skip_arrival=True
 
+                        elif arrival and current_waiting_patient[0][0] == arrival_index:
+                          skip_arrival=getInstantServe(doctor_number,all_patient[arrival_index-1],current_clock,arrival_index,len(current_waiting_patient))
+                          self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
+      
                         servePatient(current_waiting_patient[0],self.queue_panel,self.patient_with_doctor,current_clock)
 
                         current_patient_with_doctor[i] = current_waiting_patient.pop(0)
@@ -301,17 +315,3 @@ class Form1(Form1Template):
             clocksize = 420
         time.sleep(0.5)
         
-
-
-    #while(True):
-      #row = DataRowPanel(item={'column_1':record[0],'column_2':record[1],
-                                     #'column_3':record[2],'column_4':record[3],
-                                     #'column_5':record[4],'column_6':round(record[5],2),
-                                    # 'column_7':record[6]})
-      #self.data_grid_1.add_component(row)
-      #count+=1
-      #time.sleep(1)
-
-
-
-
