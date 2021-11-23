@@ -116,7 +116,7 @@ class Form1(Form1Template):
 
       self.doctor_number.text=str(doctor_number) + " doctors on call today"
       start_queue = int(doctor_number * (rand.randrange(20) + 30)/5)
-      for i in range(5):
+      for i in range(start_queue):
         new_patient = [len(all_patient) + 1, rand.randrange(2), rand.randrange(10, 60),
                        anvil.server.call('getServiceTime',20,3), 0, -1,
                        start_queue,
@@ -174,8 +174,8 @@ class Form1(Form1Template):
             current_waiting_patient.append(new_patient)
             current_waiting_patient.sort(key=lambda x: x[9], reverse=True)
             
-
-        if rand.random() < 0.2:  # emergency case
+               if clock == 60
+        if rand.random() < 0.002:  # emergency case 
             new_patient = [len(all_patient) + 1, rand.randrange(2), rand.randrange(10, 60),
                            anvil.server.call('getServiceTime',40,2), 0, current_clock, -1,
                            6,2,5]
@@ -285,7 +285,7 @@ class Form1(Form1Template):
             self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
 
         if emergency:
-            anvil.server.call('update_serviceTime')
+            anvil.server.call('rrr')
             
             self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
             #To be edit, all patient +40 minutes
