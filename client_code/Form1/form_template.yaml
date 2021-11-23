@@ -27,11 +27,11 @@ components:
   properties:
     role: null
     columns:
-    - {id: IRGQVG, title: Patient, data_key: Patient, width: 76, expand: false}
-    - {id: ANQVDY, title: Arrival Time, data_key: Arrival time, width: 128, expand: false}
+    - {id: IRGQVG, title: Patient, data_key: Patient, width: 72, expand: false}
+    - {id: ANQVDY, title: Arrival Time, data_key: Arrival time, width: 149, expand: false}
     - {id: VNYGYQ, title: Queue Size When Arrived, data_key: Queue size when arrived,
-      width: 189, expand: false}
-    - {id: ZVIQCQ, title: Priority Index, data_key: Priority index, width: 127, expand: false}
+      width: 186, expand: false}
+    - {id: ZVIQCQ, title: Priority Index, data_key: Priority index, width: 110, expand: false}
     - {id: LNKPKF, title: Predicted Waiting Time, data_key: Predicted waiting time}
     auto_header: true
     tooltip: ''
