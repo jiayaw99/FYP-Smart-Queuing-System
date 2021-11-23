@@ -4,11 +4,8 @@ from anvil.tables import app_tables
 import anvil.server
 
 @anvil.server.callable 
-def update_serviceTime():
-  print("number")
-
-@anvil.server.callable 
-def rrr():
+@tables.in_transaction
+def getSeeerviceTime():
   row = app_tables.queue_table.search()
   for data in row:
     temp = data['Predicted waiting time']
