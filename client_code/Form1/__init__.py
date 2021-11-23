@@ -74,6 +74,18 @@ def getInstantServe(doctor_number,patient,current_clock,arrival_index,length):
   assignNewPatientToQueue(doctor_number,patient,current_clock)
   return True
 
+@anvil.server.callable 
+@anvil.tables.in_transaction
+def update_serviceTime():
+  row = app_tables.queue_table.search()
+  for data in row:
+    temp=data['Predicted waiting time'] 
+    if temp.isnumeric():
+      temp = int(temp) + 40
+      my_dict={"Predicted waiting time": str(temp)}
+      app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
+                  
+  
 class Form1(Form1Template):
     
   def __init__(self, **properties):
@@ -81,7 +93,7 @@ class Form1(Form1Template):
     self.init_components(**properties)
 
     # Any code you write here will run when the form opens.
-
+  
   def data_grid_1_show(self, **event_args):
     """This method is called when the data grid is shown on the screen"""
     #count=0
@@ -116,7 +128,7 @@ class Form1(Form1Template):
 
       self.doctor_number.text=str(doctor_number) + " doctors on call today"
       start_queue = int(doctor_number * (rand.randrange(20) + 30)/5)
-      for i in range(start_queue):
+      for i in range(0):
         new_patient = [len(all_patient) + 1, rand.randrange(2), rand.randrange(10, 60),
                        anvil.server.call('getServiceTime',20,3), 0, -1,
                        start_queue,
@@ -129,7 +141,7 @@ class Form1(Form1Template):
         current_waiting_patient.append(new_patient)
         current_waiting_patient.sort(key=lambda x: x[9],reverse=True)
 
-      if current_clock == 0:
+      if current_clock == -1:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
         for i in range(len(current_waiting_patient)):
           result[i][0] -= 10
@@ -284,8 +296,8 @@ class Form1(Form1Template):
 
             self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
 
-        #if emergency:
-            
+        if emergency:
+            update_serviceTime()
             #To be edit, all patient +40 minutes
         for i in range(doctor_number):
             if left[i]:
@@ -308,6 +320,11 @@ class Form1(Form1Template):
                 Notification("Patient " + str(index_noshow[i]) + " no show ",
                 title="Patient No-show",
                 style="warning",timeout=1).show()  
+                
+                my_dict={"Predicted waiting time": "No-show"}
+                app_tables.queue_table.get(Patient=str(index_noshow[i])).update(**my_dict)
+                self.queue_panel.items=app_tables.queue_table.search()
+                #self.queue_panel.raise_event_on_children("x-noshow-event")
                 #To be edit,change to red text and remain in list
                 
         current_clock += 1

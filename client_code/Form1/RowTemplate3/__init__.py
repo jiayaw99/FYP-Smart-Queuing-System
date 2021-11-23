@@ -9,5 +9,8 @@ class RowTemplate3(RowTemplate3Template):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-
-    # Any code you write here will run when the form opens.
+    self.set_event_handler("x-noshow-event", self.change_red)
+    
+  def change_red(self, **event_args):
+    if self.label_4.text == "No-show":
+      self.label_4.foreground="#f51919"
