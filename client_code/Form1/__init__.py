@@ -50,7 +50,7 @@ def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
             'Arrival time': getTime(current_clock),
             'Queue size when arrived': str(new_patient[6]),
             'Priority index': str(new_patient[9]),
-            'Predicted waiting time': str(int(result)) + " minutes"}
+            'Predicted waiting time': str(int(result)) + " minutes"+ " (" +getTime(current_clock+int(result))+")"}
    app_tables.queue_table.add_row(**my_dict)
   
 def servePatient(currentPatient,queue_panel,doctor_panel,current_clock):
@@ -70,7 +70,7 @@ def getInstantServe(doctor_number,patient,current_clock,arrival_index,length):
   Notification("New patient " + str(arrival_index) + " arrived  ",
   title="New Arrival",
   style="success").show(1)
-            
+  print(patient)
   assignNewPatientToQueue(doctor_number,patient,current_clock)
   return True   
   
@@ -140,7 +140,7 @@ class Form1(Form1Template):
                    'Arrival time': "before 8.00 am",
                    'Queue size when arrived': str(current_waiting_patient[i][6]),
                    'Priority index': str(current_waiting_patient[i][9]),
-                   'Predicted waiting time': str(int(result[i][0]))+" minutes"}
+                   'Predicted waiting time': str(int(result[i][0]))+" minutes" + " (" +getTime(int(result[i][0]))+")"}
           app_tables.queue_table.add_row(**my_dict)
           
 
@@ -299,9 +299,10 @@ class Form1(Form1Template):
               
             if noshow_trial[i] < 5 and calling[i] == True:
               noshow_trial[i] += 1
-              Notification("Calling for Patient " + str(index_noshow[i]) + " " + str(noshow_trial[i]) + " time(s) ",
-              title="Calling for Patient",
-              style="warning",timeout=1).show()
+              if(noshow_trial[i]==1):
+                Notification("Calling for Patient " + str(index_noshow[i]),
+                title="Calling for Patient",
+                style="warning",timeout=3).show()
             elif noshow_trial[i] == 5 and index_noshow[i] != 0 and calling[i]:
                 noshow_trial[i] = 0
                 calling[i] = False
