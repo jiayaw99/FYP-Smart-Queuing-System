@@ -27,7 +27,7 @@ components:
   properties:
     role: null
     columns:
-    - {id: IRGQVG, title: Patient, data_key: Patient, width: 72, expand: false}
+    - {id: IRGQVG, title: Patient ID, data_key: Patient, width: 84, expand: false}
     - {id: ANQVDY, title: Arrival Time, data_key: Arrival time, width: 149, expand: false}
     - {id: VNYGYQ, title: Queue Size When Arrived, data_key: Queue size when arrived,
       width: 186, expand: false}
