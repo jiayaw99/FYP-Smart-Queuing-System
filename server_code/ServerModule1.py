@@ -13,7 +13,7 @@ def getTime(current_clock):
 
 @anvil.server.callable
 @tables.in_transaction
-def delay_Patient(doctor_number):
+def delayPatientEmergency(doctor_number):
   row = app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
   skip = 0
   for data in row:
@@ -24,7 +24,37 @@ def delay_Patient(doctor_number):
           temp = int(temp.split(' ')[0])+ int(20/doctor_number)
         else:
           temp = int(temp.split(' ')[0])+ int(50/doctor_number)
-        my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp)+")"}
+        my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
+        app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
+    skip+=1
+    
+@anvil.server.callable
+@tables.in_transaction
+def delayPatientPriority2(doctor_number):
+  row = app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
+  skip = 0
+  for data in row:
+    if skip >= 1:
+      temp = data['Predicted waiting time']
+      if temp!="No-show":
+        temp = int(temp.split(' ')[0])+ int(20/doctor_number)
+        my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
+        app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
+    skip+=1
+    
+@anvil.server.callable
+@tables.in_transaction
+def reducePredictedTime(doctor_number):
+  row = app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
+  skip = 0
+  for data in row:
+    if skip >= 1:
+      temp = data['Predicted waiting time']
+      if temp!="No-show":
+        temp = int(temp.split(' ')[0])- int(20/doctor_number) + int(5/doctor_number)
+        if(temp<0):
+          temp=0
+        my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
         app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
     skip+=1
 

@@ -1,25 +1,28 @@
 container: {type: DataRowPanel}
 components:
 - type: Label
-  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', visible: true,
-    text: '', font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-    italic: false, background: '', bold: false, underline: false, icon: ''}
+  properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+    visible: true, text: '', font_size: null, font: '', spacing_above: none, icon_align: left,
+    spacing_below: none, italic: false, background: '', bold: false, underline: false,
+    icon: ''}
   name: label_1
   layout_properties: {column: FVFVNX}
   data_bindings:
   - {property: text, code: 'self.item[''Patient'']'}
 - type: Label
-  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', visible: true,
-    text: '', font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-    italic: false, background: '', bold: false, underline: false, icon: ''}
+  properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+    visible: true, text: '', font_size: null, font: '', spacing_above: none, icon_align: left,
+    spacing_below: none, italic: false, background: '', bold: false, underline: false,
+    icon: ''}
   name: label_2
   layout_properties: {column: IIFQBJ}
   data_bindings:
   - {property: text, code: 'self.item[''Time of being served'']'}
 - type: Label
-  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', visible: true,
-    text: '', font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-    italic: false, background: '', bold: false, underline: false, icon: ''}
+  properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+    visible: true, text: '', font_size: null, font: '', spacing_above: none, icon_align: left,
+    spacing_below: none, italic: false, background: '', bold: false, underline: false,
+    icon: ''}
   name: label_3
   layout_properties: {column: KIQAGZ}
   data_bindings:

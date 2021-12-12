@@ -27,12 +27,39 @@ components:
   properties:
     role: null
     columns:
-    - {id: IRGQVG, title: Patient ID, data_key: Patient, width: 84, expand: false}
-    - {id: ANQVDY, title: Arrival Time, data_key: Arrival time, width: 149, expand: false}
-    - {id: VNYGYQ, title: Queue Size When Arrived, data_key: Queue size when arrived,
-      width: 186, expand: false}
-    - {id: ZVIQCQ, title: Priority Index, data_key: Priority index, width: 110, expand: false}
-    - {id: LNKPKF, title: Predicted Waiting Time, data_key: Predicted waiting time}
+    - {id: FVFVNX, title: Patient ID (with doctor), data_key: column_1, width: 172,
+      expand: false}
+    - {id: IIFQBJ, title: Time of being served, data_key: column_2, width: 174, expand: false}
+    - {id: KIQAGZ, title: Actual waiting time, data_key: column_3, width: 186, expand: false}
+    - {id: HVDREL, title: Predicted waiting time, data_key: column_4}
+    auto_header: true
+    tooltip: ''
+    border: ''
+    foreground: ''
+    rows_per_page: 5
+    visible: true
+    wrap_on: never
+    show_page_controls: true
+    spacing_above: none
+    spacing_below: none
+    background: ''
+  name: data_grid_2
+  layout_properties: {slot: default}
+  components:
+  - type: RepeatingPanel
+    properties: {spacing_above: none, spacing_below: none, item_template: Form1.RowTemplate2}
+    name: patient_with_doctor
+    layout_properties: {}
+- type: DataGrid
+  properties:
+    role: null
+    columns:
+    - {id: IRGQVG, title: Patient ID, data_key: Patient, width: 94, expand: false}
+    - {id: ANQVDY, title: Arrival time, data_key: Arrival time, width: 134, expand: false}
+    - {id: VNYGYQ, title: Queue size when arrived, data_key: Queue size when arrived,
+      width: 187, expand: false}
+    - {id: ZVIQCQ, title: Priority index, data_key: Priority index, width: 128, expand: false}
+    - {id: LNKPKF, title: Predicted waiting time, data_key: Predicted waiting time}
     auto_header: true
     tooltip: ''
     border: ''
@@ -53,29 +80,3 @@ components:
     layout_properties: {}
   event_bindings: {show: data_grid_1_show}
   data_bindings: []
-- type: DataGrid
-  properties:
-    role: null
-    columns:
-    - {id: FVFVNX, title: Patient with doctor, data_key: column_1, width: 160, expand: false}
-    - {id: IIFQBJ, title: Time of being served, data_key: column_2, width: 158, expand: false}
-    - {id: KIQAGZ, title: Actual waiting time, data_key: column_3, width: 162, expand: false}
-    - {id: HVDREL, title: Predicted waiting time, data_key: column_4}
-    auto_header: true
-    tooltip: ''
-    border: ''
-    foreground: ''
-    rows_per_page: 5
-    visible: true
-    wrap_on: never
-    show_page_controls: true
-    spacing_above: none
-    spacing_below: none
-    background: ''
-  name: data_grid_2
-  layout_properties: {slot: default}
-  components:
-  - type: RepeatingPanel
-    properties: {spacing_above: none, spacing_below: none, item_template: Form1.RowTemplate2}
-    name: patient_with_doctor
-    layout_properties: {}

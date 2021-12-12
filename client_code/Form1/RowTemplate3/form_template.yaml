@@ -1,9 +1,10 @@
 container: {type: DataRowPanel}
 components:
 - type: Label
-  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', visible: true,
-    text: '', font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-    italic: false, background: '', bold: false, underline: false, icon: ''}
+  properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+    visible: true, text: '', font_size: null, font: '', spacing_above: none, icon_align: left,
+    spacing_below: none, italic: false, background: '', bold: false, underline: false,
+    icon: ''}
   name: Patient
   layout_properties: {column: IRGQVG}
   data_bindings:
@@ -17,17 +18,19 @@ components:
   data_bindings:
   - {property: text, code: 'self.item[''Arrival time'']'}
 - type: Label
-  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', visible: true,
-    text: '', font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-    italic: false, background: '', bold: false, underline: false, icon: ''}
+  properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+    visible: true, text: '', font_size: null, font: '', spacing_above: none, icon_align: left,
+    spacing_below: none, italic: false, background: '', bold: false, underline: false,
+    icon: ''}
   name: label_2
   layout_properties: {column: VNYGYQ}
   data_bindings:
   - {property: text, code: 'self.item[''Queue size when arrived'']'}
 - type: Label
-  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', visible: true,
-    text: '', font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-    italic: false, background: '', bold: false, underline: false, icon: ''}
+  properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+    visible: true, text: '', font_size: null, font: '', spacing_above: none, icon_align: left,
+    spacing_below: none, italic: false, background: '', bold: false, underline: false,
+    icon: ''}
   name: label_3
   layout_properties: {column: ZVIQCQ}
   data_bindings:
