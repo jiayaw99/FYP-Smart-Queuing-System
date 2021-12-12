@@ -60,8 +60,9 @@ def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
 
         print(str(current_predict)+"  "+str(last_row_predict))
         result = result + last_row_predict - current_predict + 1
-        offset -= 5
+        offset -= 3
     # predicted time must greater than previous patient time
+    # TODO better offset algo
 
 
    my_dict={'Patient': new_patient[0],
@@ -327,7 +328,7 @@ class Form1(Form1Template):
               if(noshow_trial[i]==1):
                 Notification("Calling for Patient " + str(index_noshow[i]),
                 title="Calling for Patient",
-                style="warning",timeout=2).show()
+                style="warning",timeout=3).show()
             elif noshow_trial[i] == 5 and index_noshow[i] != 0 and calling[i]:
                 noshow_trial[i] = 0
                 calling[i] = False
