@@ -43,7 +43,7 @@ def getTime(current_clock):
         
 def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
    result = anvil.server.call('predict',[doctor_number,new_patient[0],(-1 if new_patient[5]==-1 else 1),
-                                        new_patient[6],new_patient[9]]) - 10   
+                                        new_patient[6],new_patient[9]]) - 15   
    if result < 0:
      result=0
    my_dict={'Patient': str(new_patient[0]),

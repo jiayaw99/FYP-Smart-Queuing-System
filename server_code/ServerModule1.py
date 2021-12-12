@@ -20,11 +20,13 @@ def delay_Patient(doctor_number):
     if skip >= 1:
       temp = data['Predicted waiting time']
       if temp!="No-show":
-        temp = int(temp.split(' ')[0])+ int(50/doctor_number)
+        if skip<doctor_number:
+          temp = int(temp.split(' ')[0])+ int(20/doctor_number)
+        else:
+          temp = int(temp.split(' ')[0])+ int(50/doctor_number)
         my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp)+")"}
         app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
-    else:
-      skip+=1
+    skip+=1
 
       
 
