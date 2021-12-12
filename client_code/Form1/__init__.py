@@ -8,7 +8,7 @@ import time
 import random as rand
 
 disease =  {1: "A",2: "B",3: "C",4: "D",5: "E",6:"F"}
-
+offset = 10
 
 def RemovePatientWithDoctor(current_patient_with_doctor):
     if current_patient_with_doctor !=0 and current_patient_with_doctor[3]==0:
@@ -42,24 +42,26 @@ def getTime(current_clock):
   return(str(hour)+"."+ ("0" + str(minute) if minute<10 else str(minute))+period)                            
         
 def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
+   global offset
    result = anvil.server.call('predict',[doctor_number,new_patient[0],(-1 if new_patient[5]==-1 else 1),
-                                        new_patient[6],new_patient[9]]) - 10   
+                                        new_patient[6],new_patient[9]]) - offset   
    if result < 0:
      result=0
-  
+   
    last_row=app_tables.queue_table.search(tables.order_by('Patient',ascending=False))[0]
    if last_row['Predicted waiting time']!="No-show" and new_patient[9] == 1:
      last_row_result = int(last_row['Predicted waiting time'].split(' ')[0])
      last_row_arrival = last_row['Arrival clock']
      current_predict = int(result)+current_clock
      last_row_predict =  last_row_result+last_row_arrival
-     if current_predict < last_row_predict:
+     if current_predict <= last_row_predict:
         print(str(last_row['Patient'])  +" predicted min: "+str(last_row_result) + " arrival : "+ str(last_row_arrival))
         print(str(new_patient[0])  +" predicted min: "+str(result) + " arrival : "+ str(current_clock))
 
         print(str(current_predict)+"  "+str(last_row_predict))
         result = result + last_row_predict - current_predict + 1
-    # TODO predicted time must greater than previous patient time
+        offset -= 5
+    # predicted time must greater than previous patient time
 
 
    my_dict={'Patient': new_patient[0],
@@ -153,7 +155,7 @@ class Form1(Form1Template):
       if current_clock == 0:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
         for i in range(len(current_waiting_patient)):
-          result[i][0] -= 10
+          result[i][0] -= 5
           if result[i][0] < 0:
             result[i][0]=0
             
