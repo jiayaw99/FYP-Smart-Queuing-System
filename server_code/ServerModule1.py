@@ -29,7 +29,6 @@ def delayPatientEmergency(doctor_number):
     skip+=1
     
 @anvil.server.callable
-@tables.in_transaction
 def delayPatientPriority2(doctor_number):
   row = app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
   skip = 0
