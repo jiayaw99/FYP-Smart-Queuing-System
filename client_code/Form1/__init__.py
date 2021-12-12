@@ -53,13 +53,12 @@ def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
      last_row_arrival = last_row['Arrival clock']
      current_predict = int(result)+current_clock
      last_row_predict =  last_row_result+last_row_arrival
-     if current_predict<last_row_predict:
+     if current_predict < last_row_predict:
         print(str(last_row['Patient'])  +" predicted min: "+str(last_row_result) + " arrival : "+ str(last_row_arrival))
         print(str(new_patient[0])  +" predicted min: "+str(result) + " arrival : "+ str(current_clock))
 
         print(str(current_predict)+"  "+str(last_row_predict))
         result = result + last_row_predict - current_predict + 1
-        print(str(result))
     # TODO predicted time must greater than previous patient time
 
 
