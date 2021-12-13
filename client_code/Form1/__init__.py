@@ -9,6 +9,9 @@ import random as rand
 
 disease =  {1: "A",2: "B",3: "C",4: "D",5: "E",6:"F"}
 offset = 10
+adjustment = 0
+adjustmentCount = 0
+
 
 def RemovePatientWithDoctor(current_patient_with_doctor):
     if current_patient_with_doctor !=0 and current_patient_with_doctor[3]==0:
@@ -43,33 +46,41 @@ def getTime(current_clock):
         
 def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
    global offset
+   global adjustment
    result = anvil.server.call('predict',[doctor_number,new_patient[0],(-1 if new_patient[5]==-1 else 1),
-                                        new_patient[6],new_patient[9]]) - offset   
+                                        new_patient[6],new_patient[9]]) - offset + adjustment
    if result < 0:
      result=0
    
-   last_row=app_tables.queue_table.search(tables.order_by('Patient',ascending=False))[0]
-   if last_row['Predicted waiting time']!="No-show" and new_patient[9] == 1:
-     last_row_result = int(last_row['Predicted waiting time'].split(' ')[0])
-     last_row_arrival = last_row['Arrival clock']
-     current_predict = int(result)+current_clock
-     last_row_predict =  last_row_result+last_row_arrival
-     if current_predict <= last_row_predict:
-        print(str(last_row['Patient'])  +" predicted min: "+str(last_row_result) + " arrival : "+ str(last_row_arrival))
-        print(str(new_patient[0])  +" predicted min: "+str(result) + " arrival : "+ str(current_clock))
+   last_row=app_tables.queue_table.search(tables.order_by('Patient',ascending=False))
+   if (len(last_row) > 0):
+     last_row = last_row[0]
+     if last_row['Predicted waiting time']!="No-show" and last_row['Predicted waiting time']!="ASAP" and new_patient[9] == 1:
+       last_row_result = int(last_row['Predicted waiting time'].split(' ')[0])
+       last_row_arrival = last_row['Arrival clock']
+       current_predict = int(result)+current_clock
+       last_row_predict =  last_row_result+last_row_arrival
+       if current_predict <= last_row_predict:
+          print(str(last_row['Patient'])  +" predicted min: "+str(last_row_result) + " arrival : "+ str(last_row_arrival))
+          print(str(new_patient[0])  +" predicted min: "+str(result) + " arrival : "+ str(current_clock))
 
-        print(str(current_predict)+"  "+str(last_row_predict))
-        result = result + last_row_predict - current_predict + 1
-        offset -= 3
+          print(str(current_predict)+"  "+str(last_row_predict))
+          result = result + last_row_predict - current_predict + 1
+          offset -= 3
     # predicted time must greater than previous patient time
     # TODO better offset algo
 
+   predictResult = "" 
+   if (new_patient[9]== 2 or new_patient[9] ==5):
+      predictResult = "ASAP"
+   else:
+      predictResult = str(int(result)) + " minutes"+ " (" +getTime(current_clock+int(result))+")"
 
    my_dict={'Patient': new_patient[0],
             'Arrival time': getTime(current_clock),
             'Queue size when arrived': str(new_patient[6]),
             'Priority index': str(new_patient[9]),
-            'Predicted waiting time': str(int(result)) + " minutes"+ " (" +getTime(current_clock+int(result))+")",
+            'Predicted waiting time': predictResult,
             'Arrival clock': current_clock}
   
    app_tables.queue_table.add_row(**my_dict)
@@ -85,6 +96,16 @@ def servePatient(currentPatient,queue_panel,doctor_panel,current_clock):
            'Predicted waiting time': pop_row['Predicted waiting time']}
   app_tables.doctor_table.add_row(**my_dict)
   
+  global adjustmentCount
+  global adjustment
+  
+  if (pop_row['Priority index'] == "1" and currentPatient[4]-int(pop_row['Predicted waiting time'].split(' ')[0])>10):
+    adjustmentCount+=1
+    if(adjustmentCount ==5):
+      adjustmentCount=0
+      adjustment +=5
+      anvil.server.call('adjustmentDelay',adjustment)
+    
   pop_row.delete()
   queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
   doctor_panel.items=app_tables.doctor_table.search()
@@ -350,5 +371,5 @@ class Form1(Form1Template):
             clocksize = 450
         elif len(current_waiting_patient)/doctor_number >= 5 and current_clock<clocksize and current_clock > 550:  # do not accept patient anymore if too much queue near the closing hour
             clocksize = 550
-        time.sleep(1)
+        time.sleep(0.5)
         
