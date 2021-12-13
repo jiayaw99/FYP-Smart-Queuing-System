@@ -6,12 +6,13 @@ from anvil.tables import app_tables
 import anvil.server
 import time 
 import random as rand
+import math
 
 disease =  {1: "A",2: "B",3: "C",4: "D",5: "E",6:"F"}
-offset = 10
-adjustment = 0
+offset = 10  
+adjustment = 0 # more predicted waiting time
 adjustmentCount = 0
-
+advance = 0 # less predicted waiting time
 
 def RemovePatientWithDoctor(current_patient_with_doctor):
     if current_patient_with_doctor !=0 and current_patient_with_doctor[3]==0:
@@ -48,7 +49,7 @@ def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
    global offset
    global adjustment
    result = anvil.server.call('predict',[doctor_number,new_patient[0],(-1 if new_patient[5]==-1 else 1),
-                                        new_patient[6],new_patient[9]]) - offset + adjustment
+                                        new_patient[6],new_patient[9]]) - offset + adjustment - advance
    if result < 0:
      result=0
    
@@ -61,14 +62,11 @@ def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
        current_predict = int(result)+current_clock
        last_row_predict =  last_row_result+last_row_arrival
        if current_predict <= last_row_predict:
-          print(str(last_row['Patient'])  +" predicted min: "+str(last_row_result) + " arrival : "+ str(last_row_arrival))
-          print(str(new_patient[0])  +" predicted min: "+str(result) + " arrival : "+ str(current_clock))
-
-          print(str(current_predict)+"  "+str(last_row_predict))
+          #print(str(last_row['Patient'])  +" predicted min: "+str(last_row_result) + " arrival : "+ str(last_row_arrival))
+          print("patient " + str(new_patient[0]) + " offset +1" )
           result = result + last_row_predict - current_predict + 1
-          offset -= 3
-    # predicted time must greater than previous patient time
-    # TODO better offset algo
+          offset -= 1
+
 
    predictResult = "" 
    if (new_patient[9]== 2 or new_patient[9] ==5):
@@ -98,13 +96,29 @@ def servePatient(currentPatient,queue_panel,doctor_panel,current_clock):
   
   global adjustmentCount
   global adjustment
+  global advance
   
-  if (pop_row['Priority index'] == "1" and currentPatient[4]-int(pop_row['Predicted waiting time'].split(' ')[0])>10):
-    adjustmentCount+=1
-    if(adjustmentCount ==5):
+  if pop_row['Priority index'] == "1":
+    temp = currentPatient[4]-int(pop_row['Predicted waiting time'].split(' ')[0])
+    if(temp<0):
+      print("delay: "+str(-temp) + " new patient adjustment "+str(temp))
+      if adjustment != 0: 
+        adjustment = 0
+      else:
+        advance = temp
+      anvil.server.call('adjustmentDelay',-math.ceil(temp/2))
+    elif(temp>=15):
+      adjustmentCount+=1
+      if(adjustmentCount == 3):
+        adjustmentCount=0
+        if advance !=0:
+          advance = 0
+        else:
+          adjustment = 3
+        print("adjustment: 3" )
+        anvil.server.call('adjustmentDelay',3)
+    else:
       adjustmentCount=0
-      adjustment +=5
-      anvil.server.call('adjustmentDelay',adjustment)
     
   pop_row.delete()
   queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
@@ -115,7 +129,7 @@ def getInstantServe(doctor_number,patient,current_clock,arrival_index,length):
   Notification("New patient " + str(arrival_index) + " arrived  ",
   title="New Arrival",
   style="success",timeout=3).show()
-  print(patient)
+  #print(patient)
   assignNewPatientToQueue(doctor_number,patient,current_clock)
   return True   
   
@@ -177,7 +191,7 @@ class Form1(Form1Template):
       if current_clock == 0:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
         for i in range(len(current_waiting_patient)):
-          result[i][0] -= 5
+          result[i][0] -= 10
           if result[i][0] < 0:
             result[i][0]=0
             
@@ -220,8 +234,8 @@ class Form1(Form1Template):
             current_waiting_patient.append(new_patient)
             current_waiting_patient.sort(key=lambda x: x[9], reverse=True)
             
-        if rand.random() < 0.002:  # emergency case 
-        #if current_clock == 5:
+        #if rand.random() < 0.002:  # emergency case 
+        if current_clock == 5:
             new_patient = [len(all_patient) + 1, rand.randrange(2), rand.randrange(10, 60),
                            anvil.server.call('getServiceTime',40,2), 0, current_clock, -1,
                            6,2,5]

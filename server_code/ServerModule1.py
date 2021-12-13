@@ -12,7 +12,6 @@ def getTime(current_clock):
   return(str(hour)+"."+ ("0" + str(minute) if minute<10 else str(minute))+period) 
 
 @anvil.server.callable
-@tables.in_transaction
 def delayPatientEmergency(doctor_number):
   row = app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
   skip = 0
@@ -48,7 +47,7 @@ def adjustmentDelay(minutes):
   for data in row:
     temp = data['Predicted waiting time']
     if temp!="No-show" and temp!="ASAP":
-        temp = int(temp.split(' ')[0])+ minutes
+        temp = int(temp.split(' ')[0]) + minutes
         my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
         app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
     
