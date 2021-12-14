@@ -13,6 +13,7 @@ offset = 10
 adjustment = 0 # more predicted waiting time
 adjustmentCount = 0
 advance = 0 # less predicted waiting time
+sleep = False
 
 def RemovePatientWithDoctor(current_patient_with_doctor):
     if current_patient_with_doctor !=0 and current_patient_with_doctor[3]==0:
@@ -120,6 +121,9 @@ def servePatient(currentPatient,queue_panel,doctor_panel,current_clock):
     else:
       adjustmentCount=0
     
+    if(temp>20):
+      print("above 20 minutes waited")
+    
   pop_row.delete()
   queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
   doctor_panel.items=app_tables.doctor_table.search()
@@ -132,18 +136,34 @@ def getInstantServe(doctor_number,patient,current_clock,arrival_index,length):
   #print(patient)
   assignNewPatientToQueue(doctor_number,patient,current_clock)
   return True   
+
   
 class Form1(Form1Template):
     
+
+  def pause(self,**event_args):
+    global sleep
+    sleep = True
+    pass
+
+  def play(self,**event_args):
+    global sleep
+    sleep = False
+    pass
+  
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
 
     # Any code you write here will run when the form opens.
+
   
   def data_grid_1_show(self, **event_args):
     """This method is called when the data grid is shown on the screen"""
     #count=0
+    self.button_pause.set_event_handler('click',self.pause)
+    self.button_continue.set_event_handler('click',self.play)
+    
     app_tables.doctor_table.delete_all_rows()
     app_tables.queue_table.delete_all_rows()
     doctors_number=[]
@@ -385,5 +405,15 @@ class Form1(Form1Template):
             clocksize = 450
         elif len(current_waiting_patient)/doctor_number >= 5 and current_clock<clocksize and current_clock > 550:  # do not accept patient anymore if too much queue near the closing hour
             clocksize = 550
-        time.sleep(0.5)
         
+        time.sleep(0.5)
+
+        while(sleep):
+          time.sleep(0.5)
+          
+        
+
+
+
+
+

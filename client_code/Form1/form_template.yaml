@@ -15,6 +15,27 @@ components:
       icon: ''}
     name: doctor_number
     layout_properties: {grid_position: 'GCZSMX,RNQZMF', full_width_row: false, row_background: '#ffffff'}
+  - type: Button
+    properties: {role: null, align: center, tooltip: '', border: '', enabled: true,
+      foreground: '', visible: true, text: Pause, font_size: null, font: '', spacing_above: small,
+      icon_align: left, spacing_below: small, italic: false, background: '#fb9d32',
+      bold: false, underline: false, icon: ''}
+    name: button_pause
+    layout_properties: {grid_position: 'GCZSMX,UGZDAO UUQMYM,HIBOKV', row_background: '#ffffff',
+      full_width_row: false}
+    event_bindings: {click: pause}
+  - type: Button
+    properties: {role: null, align: center, tooltip: '', border: '', enabled: true,
+      foreground: '#000000', visible: true, text: Continue, font_size: null, font: '',
+      spacing_above: small, icon_align: left, spacing_below: small, italic: false,
+      background: '#79e65b', bold: false, underline: false, icon: ''}
+    name: button_continue
+    layout_properties:
+      col_widths: {}
+      grid_position: GCZSMX,UGZDAO UUQMYM,ZGPLFY
+      full_width_row: false
+      row_background: '#ffffff'
+    event_bindings: {click: play}
   - type: Label
     properties: {role: null, align: right, tooltip: '', border: '', foreground: '',
       visible: true, text: '8.00 am
