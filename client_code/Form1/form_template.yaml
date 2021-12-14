@@ -4,46 +4,48 @@ container:
   properties: {html: '@theme:standard-page.html'}
 components:
 - type: ColumnPanel
-  properties: {col_widths: '{}'}
+  properties: {col_widths: '{"MHQFKR":30,"RNQZMF":30,"LBESKP":30,"XQIXDX":40,"MFHTJL":20}'}
   name: content_panel
   layout_properties: {slot: default}
   components:
+  - type: Label
+    properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+      visible: true, text: '8.00 am
+
+        ', font_size: 20, font: '', spacing_above: none, icon_align: left, spacing_below: none,
+      italic: false, background: '', bold: true, underline: false, icon: ''}
+    name: clock
+    layout_properties: {grid_position: 'GCZSMX,RNQZMF YAUNYK,EMTVPN', full_width_row: false,
+      row_background: '#ffffff'}
   - type: Label
     properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
       visible: true, text: '', font_size: 20, font: '', spacing_above: none, icon_align: left,
       spacing_below: none, italic: false, background: '', bold: true, underline: false,
       icon: ''}
     name: doctor_number
-    layout_properties: {grid_position: 'GCZSMX,RNQZMF', full_width_row: false, row_background: '#ffffff'}
+    layout_properties: {grid_position: 'GCZSMX,RNQZMF YAUNYK,MHQFKR', full_width_row: false,
+      row_background: '#ffffff'}
   - type: Button
-    properties: {role: null, align: center, tooltip: '', border: '', enabled: true,
+    properties: {role: null, align: right, tooltip: '', border: '', enabled: true,
       foreground: '', visible: true, text: Pause, font_size: null, font: '', spacing_above: small,
       icon_align: left, spacing_below: small, italic: false, background: '#fb9d32',
       bold: false, underline: false, icon: ''}
     name: button_pause
-    layout_properties: {grid_position: 'GCZSMX,UGZDAO UUQMYM,HIBOKV', row_background: '#ffffff',
+    layout_properties: {grid_position: 'GCZSMX,LBESKP RXNRFB,XQIXDX', row_background: '#ffffff',
       full_width_row: false}
     event_bindings: {click: pause}
   - type: Button
-    properties: {role: null, align: center, tooltip: '', border: '', enabled: true,
+    properties: {role: null, align: left, tooltip: '', border: '', enabled: true,
       foreground: '#000000', visible: true, text: Continue, font_size: null, font: '',
       spacing_above: small, icon_align: left, spacing_below: small, italic: false,
       background: '#79e65b', bold: false, underline: false, icon: ''}
     name: button_continue
     layout_properties:
       col_widths: {}
-      grid_position: GCZSMX,UGZDAO UUQMYM,ZGPLFY
+      grid_position: GCZSMX,LBESKP RXNRFB,MFHTJL
       full_width_row: false
       row_background: '#ffffff'
     event_bindings: {click: play}
-  - type: Label
-    properties: {role: null, align: right, tooltip: '', border: '', foreground: '',
-      visible: true, text: '8.00 am
-
-        ', font_size: 20, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-      italic: false, background: '', bold: true, underline: false, icon: ''}
-    name: clock
-    layout_properties: {grid_position: 'GCZSMX,CAHMUW', full_width_row: false, row_background: '#ffffff'}
 - type: DataGrid
   properties:
     role: null
