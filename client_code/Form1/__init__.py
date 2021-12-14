@@ -7,7 +7,6 @@ import anvil.server
 import time 
 import random as rand
 import math
-import Toast from '@servicetitan/design-system'
 
 disease =  {1: "A",2: "B",3: "C",4: "D",5: "E",6:"F"}
 offset = 10  
@@ -90,7 +89,8 @@ def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
   
 def servePatient(currentPatient,queue_panel,doctor_panel,current_clock):
   pop_row=app_tables.queue_table.get(Patient=currentPatient[0])
-  my_dict={'Patient': pop_row['Patient'],
+  my_dict={'Doctor' : ,
+           'Patient': pop_row['Patient'],
            'Time of being served': getTime(current_clock),
            'Actual waiting time': str(currentPatient[4]) + " minutes",
            'Predicted waiting time': pop_row['Predicted waiting time']}

@@ -37,6 +37,9 @@ db_schema:
     client: full
     server: full
     columns:
+    - name: Doctor
+      admin_ui: {width: 200}
+      type: number
     - name: Patient
       admin_ui: {width: 200}
       type: number

@@ -1,4 +1,7 @@
-container: {type: DataRowPanel}
+container:
+  type: DataRowPanel
+  data_bindings:
+  - {property: tag, code: 'self.item[''Doctor'']'}
 components:
 - type: Label
   properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
@@ -35,5 +38,13 @@ components:
   layout_properties: {column: HVDREL}
   data_bindings:
   - {property: text, code: 'self.item[''Predicted waiting time'']'}
+- type: Label
+  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', visible: true,
+    text: '', font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
+    italic: false, background: '', bold: false, underline: false, icon: ''}
+  name: label_5
+  layout_properties: {column: PVYKWU}
+  data_bindings:
+  - {property: text, code: 'self.item[''Doctor'']'}
 is_package: true
 item_type: {table_id: 178953}
