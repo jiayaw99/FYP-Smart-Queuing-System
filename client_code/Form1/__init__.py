@@ -7,6 +7,7 @@ import anvil.server
 import time 
 import random as rand
 import math
+import Toast from '@servicetitan/design-system'
 
 disease =  {1: "A",2: "B",3: "C",4: "D",5: "E",6:"F"}
 offset = 10  
