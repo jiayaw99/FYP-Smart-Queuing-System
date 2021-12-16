@@ -47,27 +47,12 @@ def getTime(current_clock):
   return(str(hour)+"."+ ("0" + str(minute) if minute<10 else str(minute))+period)                            
         
 def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
-   global offset
-   global adjustment
    result = anvil.server.call('predict',[doctor_number,new_patient[0],(-1 if new_patient[5]==-1 else 1),
                                         new_patient[6],new_patient[9]]) - offset + adjustment - advance
    if result < 0:
      result=0
    
-   last_row=app_tables.queue_table.search(tables.order_by('Patient',ascending=False))
-   if (len(last_row) > 0):
-     last_row = last_row[0]
-     if last_row['Predicted waiting time']!="No-show" and last_row['Predicted waiting time']!="ASAP" and new_patient[9] == 1:
-       last_row_result = int(last_row['Predicted waiting time'].split(' ')[0])
-       last_row_arrival = last_row['Arrival clock']
-       current_predict = int(result)+current_clock
-       last_row_predict =  last_row_result+last_row_arrival
-       if current_predict <= last_row_predict:
-          #print(str(last_row['Patient'])  +" predicted min: "+str(last_row_result) + " arrival : "+ str(last_row_arrival))
-          print("patient " + str(new_patient[0]) + " offset +1" )
-          result = result + last_row_predict - current_predict + 1
-          offset -= 1
-
+   result = checkPrevious(result,new_patient,current_clock)
 
    predictResult = "" 
    if (new_patient[9]== 2 or new_patient[9] ==5):
@@ -87,28 +72,42 @@ def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
      anvil.server.call('delayPatientPriority2',doctor_number)
 
   
-def servePatient(currentPatient,queue_panel,doctor_panel,current_clock):
+def servePatient(currentPatient,queue_panel,doctor_panel,current_clock, doctorIndex):
+  global adjustmentCount
+  global adjustment
+  global advance
+  
   pop_row=app_tables.queue_table.get(Patient=currentPatient[0])
-  my_dict={'Doctor' : ,
+  if (pop_row['Priority index'] == "1" ):
+    temp = currentPatient[4]-int(pop_row['Predicted waiting time'].split(' ')[0])
+    if (temp<0):
+      print("calling for delayed patient " +str(pop_row['Patient'])+ " : "+str(-temp))
+      Notification("Calling for Delayed Patient " + str(pop_row['Patient']),
+      title="Delay",
+      style="warning",timeout=2).show()
+      
+      if adjustment != 0: 
+        adjustment = 0
+      else:
+        advance = -temp
+      return False
+
+  my_dict={'Doctor' : doctorIndex+1,
            'Patient': pop_row['Patient'],
            'Time of being served': getTime(current_clock),
            'Actual waiting time': str(currentPatient[4]) + " minutes",
            'Predicted waiting time': pop_row['Predicted waiting time']}
   app_tables.doctor_table.add_row(**my_dict)
-  
-  global adjustmentCount
-  global adjustment
-  global advance
+
   
   if pop_row['Priority index'] == "1":
-    temp = currentPatient[4]-int(pop_row['Predicted waiting time'].split(' ')[0])
     if(temp<0):
       print("delay: "+str(-temp) + " new patient adjustment "+str(temp))
       if adjustment != 0: 
         adjustment = 0
       else:
-        advance = temp
-      anvil.server.call('adjustmentDelay',-math.ceil(temp/2))
+        advance = -temp
+      #anvil.server.call('adjustmentDelay',-math.ceil(temp/2))
     elif(temp>=15):
       adjustmentCount+=1
       if(adjustmentCount == 3):
@@ -128,20 +127,36 @@ def servePatient(currentPatient,queue_panel,doctor_panel,current_clock):
   pop_row.delete()
   queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
   doctor_panel.items=app_tables.doctor_table.search()
+  return True
   
 def getInstantServe(doctor_number,patient,current_clock,arrival_index,length):
   patient[6]=length
   Notification("New patient " + str(arrival_index) + " arrived  ",
   title="New Arrival",
   style="success",timeout=3).show()
-  #print(patient)
   assignNewPatientToQueue(doctor_number,patient,current_clock)
   return True   
 
-  
-class Form1(Form1Template):
-    
+def checkPrevious(result,new_patient,current_clock):
+   global offset
+   queue=app_tables.queue_table.search(tables.order_by('Patient',ascending=False))
+   for i in range(len(queue)):
+     last_row = queue[i]
+     if last_row['Predicted waiting time']!="No-show" and last_row['Predicted waiting time']!="ASAP" and new_patient[9] == 1:
+       last_row_result = int(last_row['Predicted waiting time'].split(' ')[0])
+       last_row_arrival = last_row['Arrival clock']
+       current_predict = int(result)+current_clock
+       last_row_predict =  last_row_result+last_row_arrival
+       if current_predict <= last_row_predict:
+          #print(str(last_row['Patient'])  +" predicted min: "+str(last_row_result) + " arrival : "+ str(last_row_arrival))
+          print("patient " + str(new_patient[0]) + " offset +1" )
+          result = result + last_row_predict - current_predict + 1
+          offset -= 1
+       break
+   return result
 
+class Form1(Form1Template):
+  
   def pause(self,**event_args):
     global sleep
     sleep = True
@@ -216,6 +231,8 @@ class Form1(Form1Template):
           if result[i][0] < 0:
             result[i][0]=0
             
+          # Patient after first N should be +-20min, and result = checkPrevious(result)
+
           my_dict={'Patient': current_waiting_patient[i][0],
                    'Arrival time': "before 8.00 am",
                    'Queue size when arrived': str(current_waiting_patient[i][6]),
@@ -281,8 +298,7 @@ class Form1(Form1Template):
         if len(emergency_patient) != 0:
             for i in range(len(current_patient_with_doctor)):
                 if current_patient_with_doctor[i]==0:
-                    servePatient(emergency_patient[0],self.queue_panel,self.patient_with_doctor,current_clock)
-                    
+                    servePatient(emergency_patient[0],self.queue_panel,self.patient_with_doctor,current_clock,i)
                     current_patient_with_doctor[i] = emergency_patient.pop(0)
                     break
 
@@ -302,16 +318,20 @@ class Form1(Form1Template):
                       elif arrival and current_waiting_patient[0][0] == arrival_index:
                           skip_arrival=getInstantServe(doctor_number,all_patient[arrival_index-1],current_clock,arrival_index,len(current_waiting_patient))
                           self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
-                      
-                      servePatient(current_waiting_patient[0],self.queue_panel,self.patient_with_doctor,current_clock)
-
-                      current_patient_with_doctor[i] = current_waiting_patient.pop(0)
-                elif calling[i] == False:
+                      # patient no-show and let next patient come in
+                      success=servePatient(current_waiting_patient[0],self.queue_panel,self.patient_with_doctor,current_clock,i)
+                      if success:  
+                        current_patient_with_doctor[i] = current_waiting_patient.pop(0)
+                      else:
+                        calling[i] = True
+                        calling_patient[i]=current_waiting_patient.pop(0)
+                elif calling[i] == False: # patient come back
                     noshow_trial[i] = 0
                     if current_patient_with_doctor[i] == 0:
-                        servePatient(calling_patient[i],self.queue_panel,self.patient_with_doctor,current_clock)
-
+                        servePatient(calling_patient[i],self.queue_panel,self.patient_with_doctor,current_clock,i)
+  
                         current_patient_with_doctor[i] = calling_patient[i]
+
                     else:
                         current_waiting_patient.insert(0, calling_patient[i])
                     calling_patient[i]=0
@@ -332,10 +352,14 @@ class Form1(Form1Template):
                           skip_arrival=getInstantServe(doctor_number,all_patient[arrival_index-1],current_clock,arrival_index,len(current_waiting_patient))
                           self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
       
-                        servePatient(current_waiting_patient[0],self.queue_panel,self.patient_with_doctor,current_clock)
+                        success=servePatient(current_waiting_patient[0],self.queue_panel,self.patient_with_doctor,current_clock,i)
+                        if success:  
+                          current_patient_with_doctor[i] = current_waiting_patient.pop(0)
+                        else:
+                          calling[i] = True
+                          calling_patient[i]=current_waiting_patient.pop(0)
 
-                        current_patient_with_doctor[i] = current_waiting_patient.pop(0)
-
+              
         if len(current_waiting_patient) != 0:
             for patient in current_waiting_patient:
                 patient[4] += 1
@@ -369,7 +393,6 @@ class Form1(Form1Template):
             anvil.server.call('delayPatientEmergency',doctor_number)
             
             self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
-            #To be edit, all patient +40 minutes
         for i in range(doctor_number):
             if left[i]:
               Notification("Patient " + str(index[i]) + " left  ",
@@ -384,11 +407,12 @@ class Form1(Form1Template):
               if(noshow_trial[i]==1):
                 Notification("Calling for Patient " + str(index_noshow[i]),
                 title="Calling for Patient",
-                style="warning",timeout=3).show()
+                style="warning",timeout=2).show()
             elif noshow_trial[i] == 5 and index_noshow[i] != 0 and calling[i]:
                 noshow_trial[i] = 0
                 calling[i] = False
                 calling_patient[i]=0
+                # TODO add into pending list for 1 hour
                 Notification("Patient " + str(index_noshow[i]) + " no show ",
                 title="Patient No-show",
                 style="warning",timeout=3).show()  
@@ -398,8 +422,6 @@ class Form1(Form1Template):
                 anvil.server.call('reducePredictedTime',doctor_number)
 
                 self.queue_panel.items=app_tables.queue_table.search()
-                #self.queue_panel.raise_event_on_children("x-noshow-event")
-                #To be edit,change to red text and remain in list
                 
         current_clock += 1
         if len(current_waiting_patient)/doctor_number >= 10 and current_clock<clocksize and current_clock > 450:  # do not accept patient anymore if too much queue near the closing hour

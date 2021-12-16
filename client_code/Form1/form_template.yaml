@@ -50,7 +50,7 @@ components:
   properties:
     role: null
     columns:
-    - {id: PVYKWU, title: Doctor ID, data_key: Doctor}
+    - {id: PVYKWU, title: Doctor ID, data_key: Doctor, width: 80, expand: false}
     - {id: FVFVNX, title: Patient ID (with doctor), data_key: column_1, width: 172,
       expand: false}
     - {id: IIFQBJ, title: Time of being served, data_key: column_2, width: 174, expand: false}
