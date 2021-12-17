@@ -25,7 +25,7 @@ def RemovePatientWithDoctor(current_patient_with_doctor):
 def CheckNoShow(arrival_index, current_waiting_patient):
     random_noshow_rate=rand.randrange(20)/100   #20%
     index = current_waiting_patient[0][0]
-    if rand.random() < random_noshow_rate and index!=arrival_index:
+    if rand.random() < 1 and index!=arrival_index:
         return index
     else:
         return 0
@@ -231,7 +231,7 @@ class Form1(Form1Template):
       index = [0]*doctor_number
       no_show_record_count=0
       pending = [False]*doctor_number
-      serveComeBack = [False]*doctor_number
+      serveComeBack = False
 
       self.doctor_number.text=str(doctor_number) + " doctors on call today"
       start_queue = int(doctor_number * (rand.randrange(20) + 30)/5)
@@ -251,7 +251,7 @@ class Form1(Form1Template):
       if current_clock == 0:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
         for i in range(len(current_waiting_patient)):
-          result[i][0] -= 0 #-10
+          result[i][0] -= -10 #10
           if result[i][0] < 0:
             result[i][0]=0
             
@@ -314,28 +314,38 @@ class Form1(Form1Template):
             self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
 
         count = 0
+        toDelete = []
         for i in range(len(pending_patient)):
           if(rand.random()<pending_patient[i][10] and current_clock<pending_patient[i][11]):
             # come back rate and max clock that allow for come back
             my_dict={"Status": "Patient came back after calling at "+getTime(current_clock)}
-            print(str(pending_patient[i][0]))
+            print("keke" + str(pending_patient[i][0]) + "came back at "+str(getTime(current_clock)))
             app_tables.queue_table.get(Patient=pending_patient[i][0]).update(**my_dict)
             self.queue_panel.items=app_tables.queue_table.search()
             
             current_waiting_patient.insert(count, pending_patient[i])
             count +=1
-            serveComeBack[i]=True
+            serveComeBack=True
+            toDelete.append(i)
             #toastmessage
-          elif current_clock>=pending_patient[i][11] and pending_patient[i][10]!=0:
-            pending_patient[i][10]=0
+          elif current_clock>=pending_patient[i][11]:
             Notification("Patient " + str(pending_patient[i][0]) + " no show ",
             title="Patient No-show",
             style="warning",timeout=3).show() 
             my_dict={"Status": "No-show"}
+            #None Type error
+            print("error "+str(pending_patient[i][0]))
+            print("error "+str(pending_patient))
+
             app_tables.queue_table.get(Patient=pending_patient[i][0]).update(**my_dict)
             anvil.server.call('reducePredictedTime',doctor_number)
             self.queue_panel.items=app_tables.queue_table.search()
-          
+            toDelete.append(i)
+        
+        print("toDelete="+str(toDelete))
+        for i in range(len(toDelete)):
+          del pending_patient[toDelete[len(toDelete)-i-1]]
+             
         for i in range(len(current_patient_with_doctor)):
             index[i], left[i] = RemovePatientWithDoctor(current_patient_with_doctor[i])
             if (left[i]):
@@ -354,8 +364,8 @@ class Form1(Form1Template):
                 print(getTime(current_clock) +" first patient is "+ str(current_waiting_patient[0][0]))
                 calling[i] = CallingForNoshow(noshow_trial[i])
                 print("Doctor "+str(i+1) +" Calling patient "+ str(calling_patient[i][0])+"  Trial="+str(noshow_trial[i]))
-                if serveComeback[i]:
-                  serveComeBack[i]=False
+                if serveComeBack:
+                  serveComeBack=False
                   servePatient(current_waiting_patient[0],self.queue_panel,self.patient_with_doctor,current_clock,i)
                   current_patient_with_doctor[i] = current_waiting_patient.pop(0)
                 elif (calling[i] and noshow_trial[i] == 5):

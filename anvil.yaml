@@ -32,8 +32,8 @@ db_schema:
     - name: Arrival clock
       admin_ui: {width: 200}
       type: number
-    - name: Column6
-      admin_ui: {width: 200}
+    - name: Status
+      admin_ui: {width: 315.2}
       type: string
   doctor_table:
     title: Doctor Table
