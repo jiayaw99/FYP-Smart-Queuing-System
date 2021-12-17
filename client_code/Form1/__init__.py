@@ -23,7 +23,7 @@ def RemovePatientWithDoctor(current_patient_with_doctor):
         return 0,False
 
 def CheckNoShow(arrival_index, current_waiting_patient):
-    random_noshow_rate=rand.randrange(30)/100   #20%
+    random_noshow_rate=rand.randrange(20)/100   #20%
     index = current_waiting_patient[0][0]
     if rand.random() < random_noshow_rate and index!=arrival_index:
         return index
@@ -32,7 +32,7 @@ def CheckNoShow(arrival_index, current_waiting_patient):
 
 def CallingForNoshow(noshow_trial):
     call_success_rate=rand.randrange(30)/100   #30%
-    if rand.random() < call_success_rate and noshow_trial!=0:
+    if rand.random() < 0 and noshow_trial!=0:
         return False
     else:
         #noshow_trial += 1
@@ -40,8 +40,8 @@ def CallingForNoshow(noshow_trial):
       
 def getTimeTolerance(current_clock,predicted_time):
   period = predicted_time[-3:-1]
-  hour=int(predicted_time.split("(")[1].split(":")[0])
-  minute=int(predicted_time.split("(")[1].split(":")[1][:2])
+  hour=int(predicted_time.split("(")[1].split(".")[0])
+  minute=int(predicted_time.split("(")[1].split(".")[1][:2])
   if period == "pm" and hour != 12:
     hour += 4 
   else:
@@ -76,7 +76,8 @@ def assignNewPatientToQueue(doctor_number,new_patient,current_clock):
             'Queue size when arrived': str(new_patient[6]),
             'Priority index': str(new_patient[9]),
             'Predicted waiting time': predictResult,
-            'Arrival clock': current_clock}
+            'Arrival clock': current_clock,
+            'Status': "Waiting"}
   
    app_tables.queue_table.add_row(**my_dict)
    if new_patient[9]==2:
@@ -93,9 +94,9 @@ def servePatient(currentPatient,queue_panel,doctor_panel,current_clock, doctorIn
     print("Patient back " +str(pop_row['Patient']))
 
   if(comeback==False):
-    if (pop_row['Priority index'] == "1" ):
+    if (pop_row['Priority index'] == "1" and pop_row['Status']== "Waiting"):
       temp = currentPatient[4]-int(pop_row['Predicted waiting time'].split(' ')[0])
-
+      print("patient "+str(currentPatient[0])+ " "+str(temp))
       if (temp<0):
         print("calling for delayed patient " +str(pop_row['Patient'])+ " : "+str(-temp))
         Notification("Calling for Delayed Patient " + str(pop_row['Patient']),
@@ -227,7 +228,7 @@ class Form1(Form1Template):
       Doctor_Status = [0]*doctor_number
       index = [0]*doctor_number
       no_show_record_count=0
-      pending = False
+      pending = [False]*doctor_number
 
       self.doctor_number.text=str(doctor_number) + " doctors on call today"
       start_queue = int(doctor_number * (rand.randrange(20) + 30)/5)
@@ -257,7 +258,8 @@ class Form1(Form1Template):
                    'Queue size when arrived': str(current_waiting_patient[i][6]),
                    'Priority index': str(current_waiting_patient[i][9]),
                    'Predicted waiting time': str(int(result[i][0]))+" minutes" + " (" +getTime(int(result[i][0]))+")",
-                   'Arrival clock': current_clock}
+                   'Arrival clock': current_clock,
+                   'Status': "Waiting"}
           app_tables.queue_table.add_row(**my_dict)
           
 
@@ -312,13 +314,13 @@ class Form1(Form1Template):
         for i in range(len(pending_patient)):
           if(rand.random()<pending_patient[i][10] and current_clock<pending_patient[i][11]):
             # come back rate and max clock that allow for come back
-            my_dict={"Predicted waiting time": "Patient came back"}
+            my_dict={"Status": "Patient came back after calling"}
             app_tables.queue_table.get(Patient=pending_patient[i][0]).update(**my_dict)
             self.queue_panel.items=app_tables.queue_table.search()
             
             current_waiting_patient.insert(count, pending_patient[i])
             count +=1
-            toastmessage
+            #toastmessage
           
         for i in range(len(current_patient_with_doctor)):
             index[i], left[i] = RemovePatientWithDoctor(current_patient_with_doctor[i])
@@ -339,15 +341,15 @@ class Form1(Form1Template):
                 print("Doctor "+str(i+1) +" Calling patient "+ str(calling_patient[i][0])+"  Trial="+str(noshow_trial[i]))
 
                 if (calling[i] and noshow_trial[i] == 5):
-                    if pending:
-                      pending = False
+                    if pending[i]:
+                      pending[i] = False
                       predictedTime = app_tables.queue_table.get(Patient=index_noshow[i])['Predicted waiting time']
                       addToPending = calling_patient[i].copy()
                       timeTolerance = getTimeTolerance(current_clock,predictedTime)
                       addToPending.append(0.9/timeTolerance)
                       addToPending.append(current_clock+timeTolerance)
                       pending_patient.append(addToPending)
-                      my_dict={"Predicted waiting time": "Waiting for patient to come back"}
+                      my_dict={"Status": "Waiting for patient to come back before "+getTime(current_clock+timeTolerance)}
                       app_tables.queue_table.get(Patient=index_noshow[i]).update(**my_dict)
                       #anvil.server.call('reducePredictedTime',doctor_number)
                       self.queue_panel.items=app_tables.queue_table.search()
@@ -360,7 +362,7 @@ class Form1(Form1Template):
                       Notification("Patient " + str(index_noshow[i]) + " no show ",
                       title="Patient No-show",
                       style="warning",timeout=3).show() 
-                      my_dict={"Predicted waiting time": "No-show"}
+                      my_dict={"Status": "No-show"}
                       app_tables.queue_table.get(Patient=index_noshow[i]).update(**my_dict)
                       anvil.server.call('reducePredictedTime',doctor_number)
                       self.queue_panel.items=app_tables.queue_table.search()
@@ -384,7 +386,7 @@ class Form1(Form1Template):
                         current_patient_with_doctor[i] = current_waiting_patient.pop(0)
                       else:
                         calling[i] = True
-                        pending = True
+                        pending[i] = True
                         index_noshow[i]=current_waiting_patient[0][0]
                         calling_patient[i]=current_waiting_patient.pop(0)
                 elif calling[i] == False: # patient come back
@@ -420,7 +422,7 @@ class Form1(Form1Template):
                           current_patient_with_doctor[i] = current_waiting_patient.pop(0)
                         else:
                           calling[i] = True
-                          pending = True
+                          pending[i] = True
                           index_noshow[i]=current_waiting_patient[0][0]
                           calling_patient[i]=current_waiting_patient.pop(0)
 
