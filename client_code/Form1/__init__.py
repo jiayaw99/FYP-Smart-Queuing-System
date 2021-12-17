@@ -92,7 +92,7 @@ def servePatient(currentPatient,queue_panel,doctor_panel,current_clock, doctorIn
   global advance
   
   if(comeback==True):
-    print("Patient back " +str(pop_row['Patient']))
+    print("Patient back during calling is " +str(pop_row['Patient']))
 
   pop_row=app_tables.queue_table.get(Patient=currentPatient[0])
   my_dict={'Doctor' : doctorIndex+1,
@@ -231,7 +231,7 @@ class Form1(Form1Template):
       index = [0]*doctor_number
       no_show_record_count=0
       pending = [False]*doctor_number
-      serveComeBack = False
+      serveComeBack = 0
 
       self.doctor_number.text=str(doctor_number) + " doctors on call today"
       start_queue = int(doctor_number * (rand.randrange(20) + 30)/5)
@@ -325,7 +325,7 @@ class Form1(Form1Template):
             
             current_waiting_patient.insert(count, pending_patient[i])
             count +=1
-            serveComeBack=True
+            serveComeBack+=1
             toDelete.append(i)
             #toastmessage
           elif current_clock>=pending_patient[i][11]:
@@ -361,11 +361,9 @@ class Form1(Form1Template):
 
         for i in range(doctor_number):
             if calling[i]:
-                print(getTime(current_clock) +" first patient is "+ str(current_waiting_patient[0][0]))
                 calling[i] = CallingForNoshow(noshow_trial[i])
-                print("Doctor "+str(i+1) +" Calling patient "+ str(calling_patient[i][0])+"  Trial="+str(noshow_trial[i]))
-                if serveComeBack:
-                  serveComeBack=False
+                if serveComeBack!=0:
+                  serveComeBack-=1
                   servePatient(current_waiting_patient[0],self.queue_panel,self.patient_with_doctor,current_clock,i)
                   current_patient_with_doctor[i] = current_waiting_patient.pop(0)
                 elif (calling[i] and noshow_trial[i] == 5):
@@ -421,7 +419,6 @@ class Form1(Form1Template):
                     noshow_trial[i] = 0
                     if current_patient_with_doctor[i] == 0:
                         servePatient(calling_patient[i],self.queue_panel,self.patient_with_doctor,current_clock,i,True)
-  
                         current_patient_with_doctor[i] = calling_patient[i]
 
                     else:
