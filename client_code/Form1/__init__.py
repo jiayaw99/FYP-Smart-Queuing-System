@@ -38,6 +38,17 @@ def CallingForNoshow(noshow_trial):
         #noshow_trial += 1
         return True  #not answering the call
       
+def getTimeTolerance(current_clock,predicted_time):
+  period = predicted_time[-3:-1]
+  hour=int(predicted_time.split("(")[1].split(":")[0])
+  minute=int(predicted_time.split("(")[1].split(":")[1][:2])
+  if period == "pm" and hour != 12:
+    hour += 4 
+  else:
+    hour -= 8
+  predictedClock = hour*60 + minute
+  return(predictedClock-current_clock+5)                             
+      
 def getTime(current_clock):
   hour=int(current_clock/60) + 8
   minute=current_clock%60
@@ -241,8 +252,6 @@ class Form1(Form1Template):
             result[i][0]=0
             
           # Patient after first N should be +-20min, and result = checkPrevious(result)
-
-          # Priority 2 should be ASAP
           my_dict={'Patient': current_waiting_patient[i][0],
                    'Arrival time': "before 8.00 am",
                    'Queue size when arrived': str(current_waiting_patient[i][6]),
@@ -299,9 +308,18 @@ class Form1(Form1Template):
             assignNewPatientToQueue(doctor_number,all_patient[emergency_index-1],current_clock)
             self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
 
+        count = 0
         for i in range(len(pending_patient)):
+          if(rand.random()<pending_patient[i][10] and current_clock<pending_patient[i][11]):
+            # come back rate and max clock that allow for come back
+            my_dict={"Predicted waiting time": "Patient came back"}
+            app_tables.queue_table.get(Patient=pending_patient[i][0]).update(**my_dict)
+            self.queue_panel.items=app_tables.queue_table.search()
+            
+            current_waiting_patient.insert(count, pending_patient[i])
+            count +=1
+            toastmessage
           
-          none
         for i in range(len(current_patient_with_doctor)):
             index[i], left[i] = RemovePatientWithDoctor(current_patient_with_doctor[i])
             if (left[i]):
@@ -323,9 +341,11 @@ class Form1(Form1Template):
                 if (calling[i] and noshow_trial[i] == 5):
                     if pending:
                       pending = False
-                      predictedTime = app_tables.queue_table.get(Patient=index_noshow[i])['Predicted waiting time'].split(' ')[0]
+                      predictedTime = app_tables.queue_table.get(Patient=index_noshow[i])['Predicted waiting time']
                       addToPending = calling_patient[i].copy()
-                      addToPending.append(0.9/(predictedTime-current_clock))
+                      timeTolerance = getTimeTolerance(current_clock,predictedTime)
+                      addToPending.append(0.9/timeTolerance)
+                      addToPending.append(current_clock+timeTolerance)
                       pending_patient.append(addToPending)
                       my_dict={"Predicted waiting time": "Waiting for patient to come back"}
                       app_tables.queue_table.get(Patient=index_noshow[i]).update(**my_dict)
@@ -348,8 +368,7 @@ class Form1(Form1Template):
                     noshow_trial[i] = 0
                     calling[i] = False
                     calling_patient[i]=0  
-                
-
+              
                     
                     if len(current_waiting_patient) > 0 and current_patient_with_doctor[i] == 0:
                       if arrival and len(current_waiting_patient)==1:
