@@ -110,9 +110,12 @@ def servePatient(currentPatient,queue_panel,doctor_panel,current_clock, doctorIn
         if advance !=0:
           advance = 0
         else:
-          adjustment = 3
-        print("adjustment: 3" )
-        anvil.server.call('adjustmentDelay',3)
+          if adjustment>=5:
+            adjustment += 2
+          else:
+            adjustment = 5
+        print("adjustment: 5" )
+        anvil.server.call('adjustmentDelay',5)
     else:
       adjustmentCount=0
     
