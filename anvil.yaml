@@ -32,11 +32,17 @@ db_schema:
     - name: Arrival clock
       admin_ui: {width: 200}
       type: number
+    - name: Status
+      admin_ui: {width: 315.2}
+      type: string
   doctor_table:
     title: Doctor Table
     client: full
     server: full
     columns:
+    - name: Doctor
+      admin_ui: {width: 200}
+      type: number
     - name: Patient
       admin_ui: {width: 200}
       type: number
@@ -47,6 +53,9 @@ db_schema:
       admin_ui: {width: 200}
       type: string
     - name: Predicted waiting time
+      admin_ui: {width: 200}
+      type: string
+    - name: Previous status
       admin_ui: {width: 200}
       type: string
 renamed: true
