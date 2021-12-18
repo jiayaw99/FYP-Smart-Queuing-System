@@ -57,7 +57,7 @@ def reducePredictedTime(doctor_number):
     if skip >= 1:
       temp = data['Predicted waiting time']
       if data['Status']=="Waiting" and temp!="ASAP":
-        temp = int(temp.split(' ')[0])- int(20/doctor_number) + int(5/doctor_number)
+        temp = int(temp.split(' ')[0])- int(15/doctor_number) + int(5/doctor_number)
         if(temp<0):
           temp = 5
         my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
