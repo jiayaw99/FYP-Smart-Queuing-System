@@ -84,7 +84,7 @@ components:
       width: 187, expand: false}
     - {id: ZVIQCQ, title: Priority index, data_key: Priority index, width: 128, expand: false}
     - {id: LNKPKF, title: Predicted waiting time, data_key: Predicted waiting time,
-      width: 169, expand: false}
+      width: '180', expand: false}
     - {id: LRJUKA, title: Status, data_key: column_1}
     auto_header: true
     tooltip: ''

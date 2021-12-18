@@ -47,7 +47,7 @@ def adjustmentDelay(minutes):
   for data in row:
     temp = data['Predicted waiting time']
     if temp!="No-show" and temp!="ASAP":
-        temp = int(temp.split(' ')[0]) + minutes
+        temp = int(temp.split(' ')[0]) + int(minutes)
         my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
         app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
     
