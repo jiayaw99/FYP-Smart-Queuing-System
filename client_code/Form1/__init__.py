@@ -243,15 +243,17 @@ class Form1(Form1Template):
 
       if current_clock == 0:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
+        result[doctor_number][0] = 18
         for i in range(len(current_waiting_patient)):
           result[i][0] -= 5 #10
 #           if result[i][0] < 0:
 #             result[i][0]=0
-          
+  
           predictedResult = ""
           if i<doctor_number:
             predictedResult = "ASAP"
           else:
+            result[i][0] = checkPrevious(result[i][0],current_waiting_patient[i],current_clock)
             predictedResult = str(int(result[i][0]))+" minutes" + " (" +getTime(int(result[i][0]))+")"
           # Patient after first N should be +-20min, and result = checkPrevious(result)
           my_dict={'Patient': current_waiting_patient[i][0],
@@ -415,7 +417,7 @@ class Form1(Form1Template):
                         current_patient_with_doctor[i] = calling_patient[i]
 
                     else:
-                        print("kekeke "+str(calling_patient[0]))
+                        print("kekeke "+str(calling_patient[i]))
                         current_waiting_patient.insert(0, calling_patient[i])
                     calling_patient[i]=0
 
