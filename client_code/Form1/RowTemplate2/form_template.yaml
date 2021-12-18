@@ -39,12 +39,21 @@ components:
   data_bindings:
   - {property: text, code: 'self.item[''Predicted waiting time'']'}
 - type: Label
-  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', visible: true,
-    text: '', font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-    italic: false, background: '', bold: false, underline: false, icon: ''}
+  properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
+    visible: true, text: '', font_size: null, font: '', spacing_above: none, icon_align: left,
+    spacing_below: none, italic: false, background: '', bold: false, underline: false,
+    icon: ''}
   name: label_5
   layout_properties: {column: PVYKWU}
   data_bindings:
   - {property: text, code: 'self.item[''Doctor'']'}
+- type: Label
+  properties: {role: null, align: left, tooltip: '', border: '', foreground: '', visible: true,
+    text: '', font_size: null, font: '', spacing_above: none, icon_align: left, spacing_below: none,
+    italic: false, background: '', bold: false, underline: false, icon: ''}
+  name: label_6
+  layout_properties: {column: ATKFHP}
+  data_bindings:
+  - {property: text, code: 'self.item[''Previous status'']'}
 is_package: true
 item_type: {table_id: 178953}

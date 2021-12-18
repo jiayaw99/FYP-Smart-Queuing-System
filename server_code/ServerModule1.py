@@ -16,17 +16,16 @@ def delayPatientEmergency(doctor_number):
   row = app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
   skip = 0
   for data in row:
-    if skip >= 1:
       temp = data['Predicted waiting time']
-      if temp!="No-show" and temp!="ASAP":
+      if data['Status']== "Waiting" and temp!="ASAP":
         if skip<doctor_number:
           temp = int(temp.split(' ')[0])+ int(20/doctor_number)
         else:
           temp = int(temp.split(' ')[0])+ int(50/doctor_number)
         my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
         app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
-    skip+=1
-    
+  skip += 1
+  
 @anvil.server.callable
 def delayPatientPriority2(doctor_number):
   row = app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
@@ -34,7 +33,7 @@ def delayPatientPriority2(doctor_number):
   for data in row:
     if skip >= 1:
       temp = data['Predicted waiting time']
-      if temp!="No-show" and temp!="ASAP":
+      if data['Status']=="Waiting" and temp!="ASAP":
         temp = int(temp.split(' ')[0])+ int(20/doctor_number)
         my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
         app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
@@ -43,10 +42,9 @@ def delayPatientPriority2(doctor_number):
 @anvil.server.callable
 def adjustmentDelay(minutes):
   row = app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
-  skip = 0
   for data in row:
     temp = data['Predicted waiting time']
-    if temp!="No-show" and temp!="ASAP":
+    if data['Status']=="Waiting" and temp!="ASAP":
         temp = int(temp.split(' ')[0]) + int(minutes)
         my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
         app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
@@ -58,7 +56,7 @@ def reducePredictedTime(doctor_number):
   for data in row:
     if skip >= 1:
       temp = data['Predicted waiting time']
-      if temp!="No-show" and temp!="ASAP":
+      if data['Status']=="Waiting" and temp!="ASAP":
         temp = int(temp.split(' ')[0])- int(20/doctor_number) + int(5/doctor_number)
         if(temp<0):
           temp = 5

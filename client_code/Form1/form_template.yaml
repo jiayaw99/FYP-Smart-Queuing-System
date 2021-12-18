@@ -51,11 +51,12 @@ components:
     role: null
     columns:
     - {id: PVYKWU, title: Doctor ID, data_key: Doctor, width: 80, expand: false}
-    - {id: FVFVNX, title: Patient ID (with doctor), data_key: column_1, width: 172,
+    - {id: FVFVNX, title: Patient ID, data_key: column_1, width: 83, expand: false}
+    - {id: IIFQBJ, title: Time of being served, data_key: column_2, width: 158, expand: false}
+    - {id: KIQAGZ, title: Actual waiting time, data_key: column_3, width: 145, expand: false}
+    - {id: HVDREL, title: Predicted waiting time, data_key: column_4, width: '185',
       expand: false}
-    - {id: IIFQBJ, title: Time of being served, data_key: column_2, width: 174, expand: false}
-    - {id: KIQAGZ, title: Actual waiting time, data_key: column_3, width: 186, expand: false}
-    - {id: HVDREL, title: Predicted waiting time, data_key: column_4}
+    - {id: ATKFHP, title: Previous status, data_key: column_5}
     auto_header: true
     tooltip: ''
     border: ''
