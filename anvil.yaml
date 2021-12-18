@@ -3,7 +3,7 @@ services:
   client_config: {}
   server_config: {auto_create_missing_columns: false}
 package_name: Main_page
-allow_embedding: false
+allow_embedding: true
 name: Main page
 runtime_options: {version: 2, client_version: '3', server_version: python3-sandbox}
 metadata: {}
@@ -55,7 +55,7 @@ db_schema:
     - name: Predicted waiting time
       admin_ui: {width: 200}
       type: string
-    - name: Column5
+    - name: Previous status
       admin_ui: {width: 200}
       type: string
 renamed: true
