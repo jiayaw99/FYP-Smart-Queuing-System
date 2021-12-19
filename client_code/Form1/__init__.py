@@ -15,14 +15,14 @@ adjustmentCount = 0
 advance = 0 # less predicted waiting time
 sleep = False
 
-def RemovePatientWithDoctor(current_patient_with_doctor):
+def RemovePatientWithDoctor(current_patient_with_doctor): # patient left
     if current_patient_with_doctor !=0 and current_patient_with_doctor[3]==0:
         index=current_patient_with_doctor[0]
         return index,True
     else:
         return 0,False
 
-def CheckNoShow(arrival_index, current_waiting_patient):
+def CheckNoShow(arrival_index, current_waiting_patient): # patient not around
     random_noshow_rate=rand.randrange(20)/100   #20%
     index = current_waiting_patient[0][0]
     if rand.random() < random_noshow_rate and index!=arrival_index:
@@ -33,7 +33,7 @@ def CheckNoShow(arrival_index, current_waiting_patient):
 def CallingForNoshow(noshow_trial):
     call_success_rate=rand.randrange(30)/100   #30%
     if rand.random() < call_success_rate and noshow_trial!=0:
-        return False
+        return False # patient came back on calling
     else:
         noshow_trial += 1
         return True  #not answering the call
