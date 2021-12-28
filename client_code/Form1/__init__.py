@@ -196,7 +196,6 @@ class Form1(Form1Template):
     self.button_continue.set_event_handler('click',self.play)
     
     app_tables.doctor_table.delete_all_rows()
-    app_tables.queue_table.delete_all_rows()
     doctors_number=[]
     for i in range(2): #doctor number in 30 days
       doctor_prob = rand.randrange(1000)
@@ -207,6 +206,8 @@ class Form1(Form1Template):
     initial =[]
 
     for days in range(2): # 1 day
+      app_tables.queue_table.delete_all_rows()
+      
       doctor_number=doctors_number[days]
       clocksize = 600  # 10 hours (from 8 am to 6pm)
       current_clock = 0
