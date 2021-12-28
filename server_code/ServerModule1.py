@@ -42,12 +42,15 @@ def delayPatientPriority2(doctor_number):
 @anvil.server.callable
 def adjustmentDelay(minutes):
   row = app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
+  skip = 0 
   for data in row:
-    temp = data['Predicted waiting time']
-    if data['Status']=="Waiting" and temp!="ASAP":
+    if skip >=1:
+      temp = data['Predicted waiting time']
+      if data['Status']=="Waiting" and temp!="ASAP":
         temp = int(temp.split(' ')[0]) + int(minutes)
         my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
         app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
+  skip +=1
     
 @anvil.server.callable
 def reducePredictedTime(doctor_number):

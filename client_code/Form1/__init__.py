@@ -206,7 +206,7 @@ class Form1(Form1Template):
     
     initial =[]
 
-    for days in range(1): # 1 day
+    for days in range(2): # 1 day
       doctor_number=doctors_number[days]
       clocksize = 600  # 10 hours (from 8 am to 6pm)
       current_clock = 0
@@ -407,7 +407,7 @@ class Form1(Form1Template):
                       if isEarly:
                           calling[i] = True
                           pending[i] = True
-                          anvil.server.call('adjustmentDelay',-2)
+                          anvil.server.call('adjustmentDelay',-3)
                           index_noshow[i]=current_waiting_patient[0][0]
                           calling_patient[i]=current_waiting_patient.pop(0)
                           my_dict={"Status": "Calling for early serve"}
@@ -441,7 +441,7 @@ class Form1(Form1Template):
                     if isEarly:
                       calling[i] = True
                       pending[i] = True
-                      anvil.server.call('adjustmentDelay',-2)
+                      anvil.server.call('adjustmentDelay',-3)
                       index_noshow[i]=current_waiting_patient[0][0]
                       calling_patient[i]=current_waiting_patient.pop(0)
                       my_dict={"Status": "Calling for early serve"}
