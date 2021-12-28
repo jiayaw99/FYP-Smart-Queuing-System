@@ -175,7 +175,7 @@ class Form1(Form1Template):
     
     initial =[]
 
-    for days in range(1): # 30 days
+    for days in range(2): # 30 days
       doctor_number=doctors_number[days]
       clocksize = 600  # 10 hours (from 8 am to 6pm)
       current_clock = 0
@@ -194,7 +194,7 @@ class Form1(Form1Template):
       index = [0]*doctor_number
 
       self.doctor_number.text=str(doctor_number) + " doctors on call today"
-      start_queue = int(doctor_number * (rand.randrange(20) + 30)/5)
+      start_queue = int(doctor_number * (rand.randrange(20) + 80)/5)
       for i in range(start_queue):
         new_patient = [len(all_patient) + 1, rand.randrange(2), rand.randrange(10, 60),
                        anvil.server.call('getServiceTime',20,3), 0, -1,
