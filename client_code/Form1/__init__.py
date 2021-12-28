@@ -245,7 +245,7 @@ class Form1(Form1Template):
 
       if current_clock == 0:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
-        result[doctor_number][0] = 63
+        result[doctor_number][0] = 23
         for i in range(len(current_waiting_patient)):
           result[i][0] -= 10
           if result[i][0] < 0:
@@ -407,7 +407,7 @@ class Form1(Form1Template):
                       if isEarly:
                           calling[i] = True
                           pending[i] = True
-                          anvil.server.call('adjustmentDelay',-3)
+                          anvil.server.call('adjustmentDelay',-2)
                           index_noshow[i]=current_waiting_patient[0][0]
                           calling_patient[i]=current_waiting_patient.pop(0)
                           my_dict={"Status": "Calling for early serve"}
@@ -441,7 +441,7 @@ class Form1(Form1Template):
                     if isEarly:
                       calling[i] = True
                       pending[i] = True
-                      anvil.server.call('adjustmentDelay',-3)
+                      anvil.server.call('adjustmentDelay',-2)
                       index_noshow[i]=current_waiting_patient[0][0]
                       calling_patient[i]=current_waiting_patient.pop(0)
                       my_dict={"Status": "Calling for early serve"}
