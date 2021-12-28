@@ -50,7 +50,8 @@ def adjustmentDelay(minutes):
         temp = int(temp.split(' ')[0]) + int(minutes)
         my_dict = {"Predicted waiting time": str(temp) + " minutes" + " (" +getTime(temp+data['Arrival clock'])+")"}
         app_tables.queue_table.get(Patient=data['Patient']).update(**my_dict)
-  skip +=1
+    skip +=1
+    # no-show also skip ???
     
 @anvil.server.callable
 def reducePredictedTime(doctor_number):

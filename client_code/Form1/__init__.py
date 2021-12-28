@@ -198,7 +198,7 @@ class Form1(Form1Template):
     app_tables.doctor_table.delete_all_rows()
     app_tables.queue_table.delete_all_rows()
     doctors_number=[]
-    for i in range(1): #doctor number in 30 days
+    for i in range(2): #doctor number in 30 days
       doctor_prob = rand.randrange(1000)
       doctor_prob = 5 if doctor_prob > 950 else (4 if doctor_prob > 500 else (3 if doctor_prob > 50 else 2))
       doctors_number.append(doctor_prob)
@@ -245,7 +245,7 @@ class Form1(Form1Template):
 
       if current_clock == 0:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
-        result[doctor_number][0] = 23
+        result[doctor_number][0] = 63
         for i in range(len(current_waiting_patient)):
           result[i][0] -= 10
           if result[i][0] < 0:
