@@ -246,7 +246,7 @@ class Form1(Form1Template):
 
       if current_clock == 0:
         result = anvil.server.call('initialPredict',doctor_number,current_waiting_patient)
-        result[doctor_number][0] = 23
+        result[doctor_number][0] = 50
         for i in range(len(current_waiting_patient)):
           result[i][0] -= 10
           if result[i][0] < 0:
