@@ -197,15 +197,14 @@ class Form1(Form1Template):
     
     app_tables.doctor_table.delete_all_rows()
     doctors_number=[]
-    for i in range(2): #doctor number in 30 days
+    for i in range(1): #doctor number in x days
       doctor_prob = rand.randrange(1000)
       doctor_prob = 5 if doctor_prob > 950 else (4 if doctor_prob > 500 else (3 if doctor_prob > 50 else 2))
       doctors_number.append(doctor_prob)
-    largest_doctor = max(doctors_number)
     
     initial =[]
 
-    for days in range(1): # 1 day
+    for days in range(1): # x days
       app_tables.queue_table.delete_all_rows()
       
       doctor_number=doctors_number[days]
@@ -270,7 +269,6 @@ class Form1(Form1Template):
           
         self.queue_panel.items=app_tables.queue_table.search(tables.order_by("Priority index",ascending=False))
 
-    #print('Clock size    Queue Size          Doctor 1 Status                      Doctor 2 Status                        Event')
       while current_clock < clocksize or any(v != 0 for v in current_patient_with_doctor) == True \
             or len(current_waiting_patient) != 0 or any(v != 0 for v in calling_patient) == True:
 
