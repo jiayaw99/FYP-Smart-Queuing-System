@@ -205,7 +205,7 @@ class Form1(Form1Template):
     
     initial =[]
 
-    for days in range(2): # 1 day
+    for days in range(1): # 1 day
       app_tables.queue_table.delete_all_rows()
       
       doctor_number=doctors_number[days]
