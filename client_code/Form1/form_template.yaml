@@ -9,36 +9,38 @@ components:
   layout_properties: {slot: default}
   components:
   - type: Label
-    properties: {role: null, align: center, tooltip: '', border: '', foreground: '',
-      visible: true, text: '8.00 am
-
-        ', font_size: 20, font: '', spacing_above: none, icon_align: left, spacing_below: none,
-      italic: false, background: '', bold: true, underline: false, icon: ''}
+    properties:
+      role: null
+      bold: true
+      align: center
+      spacing_above: none
+      background: ''
+      icon: ''
+      underline: false
+      font: ''
+      icon_align: left
+      foreground: ''
+      spacing_below: none
+      visible: true
+      border: ''
+      italic: false
+      font_size: 20
+      tooltip: ''
+      text: |
+        8.00 am
     name: clock
-    layout_properties: {grid_position: 'GCZSMX,RNQZMF YAUNYK,EMTVPN', full_width_row: false,
-      row_background: '#ffffff'}
+    layout_properties: {grid_position: 'GCZSMX,RNQZMF YAUNYK,EMTVPN', full_width_row: false, row_background: '#ffffff'}
   - type: Label
-    properties: {role: null, align: left, tooltip: '', border: '', foreground: '',
-      visible: true, text: '', font_size: 20, font: '', spacing_above: none, icon_align: left,
-      spacing_below: none, italic: false, background: '', bold: true, underline: false,
-      icon: ''}
+    properties: {role: null, bold: true, align: left, spacing_above: none, background: '', icon: '', underline: false, font: '', icon_align: left, foreground: '', spacing_below: none, visible: true, border: '', italic: false, font_size: 20, tooltip: '', text: ''}
     name: doctor_number
-    layout_properties: {grid_position: 'GCZSMX,RNQZMF YAUNYK,MHQFKR', full_width_row: false,
-      row_background: '#ffffff'}
+    layout_properties: {grid_position: 'GCZSMX,RNQZMF YAUNYK,MHQFKR', full_width_row: false, row_background: '#ffffff'}
   - type: Button
-    properties: {role: null, align: right, tooltip: '', border: '', enabled: true,
-      foreground: '', visible: true, text: Pause, font_size: null, font: '', spacing_above: small,
-      icon_align: left, spacing_below: small, italic: false, background: '#fb9d32',
-      bold: false, underline: false, icon: ''}
+    properties: {role: null, bold: false, align: right, spacing_above: small, background: '#fb9d32', icon: '', underline: false, font: '', icon_align: left, foreground: '', spacing_below: small, visible: true, border: '', italic: false, enabled: true, font_size: null, tooltip: '', text: Pause}
     name: button_pause
-    layout_properties: {grid_position: 'GCZSMX,LBESKP RXNRFB,XQIXDX', row_background: '#ffffff',
-      full_width_row: false}
+    layout_properties: {grid_position: 'GCZSMX,LBESKP RXNRFB,XQIXDX', row_background: '#ffffff', full_width_row: false}
     event_bindings: {click: pause}
   - type: Button
-    properties: {role: null, align: left, tooltip: '', border: '', enabled: true,
-      foreground: '#000000', visible: true, text: Continue, font_size: null, font: '',
-      spacing_above: small, icon_align: left, spacing_below: small, italic: false,
-      background: '#79e65b', bold: false, underline: false, icon: ''}
+    properties: {role: null, bold: false, align: left, spacing_above: small, background: '#79e65b', icon: '', underline: false, font: '', icon_align: left, foreground: '#000000', spacing_below: small, visible: true, border: '', italic: false, enabled: true, font_size: null, tooltip: '', text: Continue}
     name: button_continue
     layout_properties:
       col_widths: {}
@@ -49,25 +51,24 @@ components:
 - type: DataGrid
   properties:
     role: null
+    spacing_above: none
     columns:
     - {id: PVYKWU, title: Doctor ID, data_key: Doctor, width: 80, expand: false}
     - {id: FVFVNX, title: Patient ID, data_key: column_1, width: 83, expand: false}
     - {id: IIFQBJ, title: Time of being served, data_key: column_2, width: 158, expand: false}
     - {id: KIQAGZ, title: Actual waiting time, data_key: column_3, width: 145, expand: false}
-    - {id: HVDREL, title: Predicted waiting time, data_key: column_4, width: '185',
-      expand: false}
+    - {id: HVDREL, title: Predicted waiting time, data_key: column_4, width: '185', expand: false}
     - {id: ATKFHP, title: Previous status, data_key: column_5}
-    auto_header: true
-    tooltip: ''
-    border: ''
-    foreground: ''
-    rows_per_page: 5
-    visible: true
-    wrap_on: never
-    show_page_controls: true
-    spacing_above: none
-    spacing_below: none
     background: ''
+    rows_per_page: 5
+    wrap_on: never
+    foreground: ''
+    show_page_controls: true
+    auto_header: true
+    spacing_below: none
+    visible: true
+    border: ''
+    tooltip: ''
   name: data_grid_2
   layout_properties: {slot: default}
   components:
@@ -78,26 +79,24 @@ components:
 - type: DataGrid
   properties:
     role: null
+    spacing_above: none
     columns:
     - {id: IRGQVG, title: Patient ID, data_key: Patient, width: 94, expand: false}
     - {id: ANQVDY, title: Arrival time, data_key: Arrival time, width: 134, expand: false}
-    - {id: VNYGYQ, title: Queue size when arrived, data_key: Queue size when arrived,
-      width: 187, expand: false}
+    - {id: VNYGYQ, title: Queue size when arrived, data_key: Queue size when arrived, width: 187, expand: false}
     - {id: ZVIQCQ, title: Priority index, data_key: Priority index, width: 128, expand: false}
-    - {id: LNKPKF, title: Predicted waiting time, data_key: Predicted waiting time,
-      width: '180', expand: false}
+    - {id: LNKPKF, title: Predicted waiting time, data_key: Predicted waiting time, width: '180', expand: false}
     - {id: LRJUKA, title: Status, data_key: column_1}
-    auto_header: true
-    tooltip: ''
-    border: ''
-    foreground: ''
-    rows_per_page: 10
-    visible: true
-    wrap_on: never
-    show_page_controls: true
-    spacing_above: none
-    spacing_below: none
     background: ''
+    rows_per_page: 10
+    wrap_on: never
+    foreground: ''
+    show_page_controls: true
+    auto_header: true
+    spacing_below: none
+    visible: true
+    border: ''
+    tooltip: ''
   name: data_grid_1
   layout_properties: {slot: default}
   components:
@@ -107,3 +106,4 @@ components:
     layout_properties: {}
   event_bindings: {show: data_grid_1_show}
   data_bindings: []
+custom_component: true

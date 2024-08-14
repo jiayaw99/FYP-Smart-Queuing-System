@@ -5,8 +5,7 @@ services:
 package_name: Main_page
 allow_embedding: false
 name: Main page
-runtime_options: {version: 2, client_version: '3', server_version: python3-sandbox,
-  server_spec: null}
+runtime_options: {version: 2, client_version: '3', server_version: python3-sandbox, server_spec: null}
 metadata: {}
 startup_form: Form1
 db_schema:
